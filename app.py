@@ -94,3 +94,40 @@ def batch_calculate_distances(user_lat, user_lon, restaurants):
     for restaurant in restaurants:
         distance_map[restaurant["name"]] = calculate_haversine(user_lat, user_lon, restaurant["lat"], restaurant["lon"])
     return distance_map
+
+
+def filter_by_hard_constraints(user_prefs, knowledge_base, calculated_distances):
+    """ 
+    Step 1 of the inference engine: Matches user choices against restaurant facts.
+    if a restaurant violates even ONE choice, it is eliminated immediately.
+    """
+    surviving_restaurants = []
+    
+    #loop through every single restaurant in our knowledge base data list
+    for restaurant in knowledge_base:
+        #rule 1: dietary constraint check
+        #extract what user wants. default is None(if they didn't specify)
+        user_diet = user_prefs.get("dietary", "None")
+        if user_diet != "None":
+            if user_diet not in restaurant["dietary_options"]:
+                continue #skip and move to the next restaurant
+        
+        #rule2: budget tier check
+        user_budget = user_prefs.get("budget", "Any")
+        if user_budget != "Any":
+            if restaurant["budget_tier"] != user_budget:
+                continue
+        
+        #rule3: distance range check
+        actual_distance = calculated_distances.get(restaurant["name"],0)
+        
+        max_allowed_distance = user_prefs.get("max_distance")
+        
+        if max_allowed_distance:
+            if actual_distance > float(max_allowed_distance):
+                continue
+            
+        #if the loop reaches this point, the restaurant has passed all rules
+        surviving_restaurants.append(restaurant)
+        
+    return surviving_restaurants
