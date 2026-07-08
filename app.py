@@ -211,7 +211,7 @@ def recommend_restaurants():
         "cuisine": request.form.get("preferred_cuisine"),
         "max_distance": request.form.get("distance_radius")
     }
-    load_knowledge_base = load_knowledge_base()
+    knowledge_base = load_knowledge_base()
     
     results = run_inference_engine(user_preferences, knowledge_base)
     
