@@ -131,3 +131,41 @@ def filter_by_hard_constraints(user_prefs, knowledge_base, calculated_distances)
         surviving_restaurants.append(restaurant)
         
     return surviving_restaurants
+
+def calculate_match_scores(user_prefs, surviving_restaurants):
+    """
+    Ranks the surviving options. Evaluates soft preferences (like cuisine matching) and restaurant quality
+    to assign overall match percentage score
+    """
+    scored_recommendations= []
+    
+    user_cuisine = user_prefs.get("cuisine", "Any")
+    
+    for restaurant in surviving_restaurants:
+        #base score of 50 points
+        score = 50.0
+        
+        #feature1: cuisine matching(+30 points)
+        if user_cuisine != "Any":
+            if restaurant["cuisine"] == user_cuisine:
+                score +=30
+        
+        #feature2: user rating factor(+20 points)
+        # 4.5 out of 5 star rating -> 4.5 * 4 = 18 points
+        rating = float(restaurant.get("rating", 3.5))
+        score += (rating*4.0)
+        
+        #system boundary
+        if score > 100.0:
+            score = 100.0 
+            
+        #append the computed scored directly onto a copy of the restaurant dictionary
+        scored_item = restaurant.copy()
+        scored_item["match_score"] = round(score, 1)
+        
+        scored_recommendations.append(scored_item)
+        
+    #sort the array in descending order
+    scored_recommendations.sort(key=lambda x: x["match_score"], reverse=True)
+    
+    return scored_recommendations
