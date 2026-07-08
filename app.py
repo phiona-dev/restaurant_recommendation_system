@@ -2,10 +2,13 @@ import os
 import json
 import math
 import requests
+from flask import Flask , render_template, request #flask toolkit
 from dotenv import load_dotenv
 
 #load environment variables from the .env file immediately on startup
 load_dotenv()
+
+app = Flask(__name__) #initializes the flask app
 
 ORS_API_KEY = os.environ.get("ORS_API_KEY", "MISSING_API_KEY_IN_ENV")
 
@@ -176,7 +179,7 @@ def run_inference_engine(user_prefs, knowledge_base):
     takes incoming user choices, calculates routing, filters rules, and returns a sorted ranking list
     """
     
-    #get user cordinates(safely fallback to central Nairobi if missing)
+    #get user coordinates(safely fallback to central Nairobi if missing)
     user_lat = float(user_prefs.get("lat", -1.2833))
     user_lon = float(user_prefs.get("lon", 36.8219))
     
@@ -190,3 +193,29 @@ def run_inference_engine(user_prefs, knowledge_base):
     final_ranked_commendations = calculate_match_scores(user_prefs, surviving_restaurants)
     
     return final_ranked_commendations
+
+
+#Flask routes
+@app.route('/')
+def home():
+    return render_template("index.html")
+
+#route listens for the user clicking "Search" on the webpage
+@app.route('/recommend', methods=['POST'])
+def recommend_restaurants():
+    user_preferences = {
+        "lat": request.form.get("latitude", -1.2833),
+        "lon": request.form.get("longitude", 36.8219),
+        "dietary": request.form.get("dietary_restriction"),
+        "budget": request.form.get("budget_tier"),
+        "cuisine": request.form.get("preferred_cuisine"),
+        "max_distance": request.form.get("distance_radius")
+    }
+    load_knowledge_base = load_knowledge_base()
+    
+    results = run_inference_engine(user_preferences, knowledge_base)
+    
+    return render_template("results.html", restaurants=results)
+    
+if __name__ == "__main__":
+    app.run(debug=True)
