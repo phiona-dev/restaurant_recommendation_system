@@ -131,3 +131,62 @@ def filter_by_hard_constraints(user_prefs, knowledge_base, calculated_distances)
         surviving_restaurants.append(restaurant)
         
     return surviving_restaurants
+
+def calculate_match_scores(user_prefs, surviving_restaurants):
+    """
+    Ranks the surviving options. Evaluates soft preferences (like cuisine matching) and restaurant quality
+    to assign overall match percentage score
+    """
+    scored_recommendations= []
+    
+    user_cuisine = user_prefs.get("cuisine", "Any")
+    
+    for restaurant in surviving_restaurants:
+        #base score of 50 points
+        score = 50.0
+        
+        #feature1: cuisine matching(+30 points)
+        if user_cuisine != "Any":
+            if restaurant["cuisine"] == user_cuisine:
+                score +=30
+        
+        #feature2: user rating factor(+20 points)
+        # 4.5 out of 5 star rating -> 4.5 * 4 = 18 points
+        rating = float(restaurant.get("rating", 3.5))
+        score += (rating*4.0)
+        
+        #system boundary
+        if score > 100.0:
+            score = 100.0 
+            
+        #append the computed scored directly onto a copy of the restaurant dictionary
+        scored_item = restaurant.copy()
+        scored_item["match_score"] = round(score, 1)
+        
+        scored_recommendations.append(scored_item)
+        
+    #sort the array in descending order
+    scored_recommendations.sort(key=lambda x: x["match_score"], reverse=True)
+    
+    return scored_recommendations
+
+def run_inference_engine(user_prefs, knowledge_base):
+    """ 
+    Links all parts of the forward chaining inference engine.
+    takes incoming user choices, calculates routing, filters rules, and returns a sorted ranking list
+    """
+    
+    #get user cordinates(safely fallback to central Nairobi if missing)
+    user_lat = float(user_prefs.get("lat", -1.2833))
+    user_lon = float(user_prefs.get("lon", 36.8219))
+    
+    #step 1: routing integration
+    calculated_distances = batch_calculate_distances(user_lat, user_lon, knowledge_base)
+    
+    #step2: hard rule elimination
+    surviving_restaurants = filter_by_hard_constraints(user_prefs, knowledge_base, calculated_distances)
+    
+    #step 3: heuristic scoring and order ranking
+    final_ranked_commendations = calculate_match_scores(user_prefs, surviving_restaurants)
+    
+    return final_ranked_commendations
