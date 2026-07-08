@@ -169,3 +169,24 @@ def calculate_match_scores(user_prefs, surviving_restaurants):
     scored_recommendations.sort(key=lambda x: x["match_score"], reverse=True)
     
     return scored_recommendations
+
+def run_inference_engine(user_prefs, knowledge_base):
+    """ 
+    Links all parts of the forward chaining inference engine.
+    takes incoming user choices, calculates routing, filters rules, and returns a sorted ranking list
+    """
+    
+    #get user cordinates(safely fallback to central Nairobi if missing)
+    user_lat = float(user_prefs.get("lat", -1.2833))
+    user_lon = float(user_prefs.get("lon", 36.8219))
+    
+    #step 1: routing integration
+    calculated_distances = batch_calculate_distances(user_lat, user_lon, knowledge_base)
+    
+    #step2: hard rule elimination
+    surviving_restaurants = filter_by_hard_constraints(user_prefs, knowledge_base, calculated_distances)
+    
+    #step 3: heuristic scoring and order ranking
+    final_ranked_commendations = calculate_match_scores(user_prefs, surviving_restaurants)
+    
+    return final_ranked_commendations
