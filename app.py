@@ -1,28 +1,29 @@
+import os
 import json
 import math
 import requests
 from dotenv import load_dotenv
+from flask import Flask, render_template, request
 
-#load environment variables from the .env file immediately on startup
+# Load environment variables from the .env file immediately on startup
 load_dotenv()
+
+app = Flask(__name__)
 
 ORS_API_KEY = os.environ.get("ORS_API_KEY", "MISSING_API_KEY_IN_ENV")
 
 def load_knowledge_base():
-    """
-    Opens and reads the factual knowledge base from the local JSON file.
-    converts JSON text data into a native Python list of dictionaries
-    """
+    """Opens and reads the factual knowledge base from the local JSON file."""
     try:
         with open("restaurants.json", "r") as f:
             return json.load(f)
     except FileNotFoundError:
         return []
     
-#fallback heuristics
+# Fallback heuristics
 def calculate_haversine(lat1, lon1, lat2, lon2):
-    """calculates flat sphere distance when the API drops or hits rate limits"""
-    R=6371.0
+    """Calculates flat sphere distance when the API drops or hits rate limits"""
+    R = 6371.0
     lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
     latitude_distance = lat2 - lat1
     longitude_distance = lon2 - lon1
@@ -31,49 +32,36 @@ def calculate_haversine(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return R*c
 
-
-#API matrix
+# API matrix
 def batch_calculate_distances(user_lat, user_lon, restaurants):
-    """
-    provides real road distances for all restaurants via OpenRouteService
-    Fallback is Haversine heuristics in case of API key fail, timeout or hit rate limits
-    """
-    #skip if no restaurants to process
+    """Provides real road distances for all restaurants via OpenRouteService"""
     if not restaurants:
         return {}
     
-    #ORS matrix expects locations in [longitude, latitude] format
     user_coordinates = [user_lon, user_lat]
-    
-    #compile a flat master list of locations: [User, Restaurant1, Restaurant2, ...]
     locations = [user_coordinates]
     for restaurant in restaurants:
         locations.append([restaurant["lon"], restaurant["lat"]])
         
-    #setup endpoint request parameters
     url = "https://api.openrouteservice.org/v2/matrix/driving-car"
     headers = {
         "Authorization": ORS_API_KEY,
         "Content-Type": "application/json"
     }
     
-    #index[0] is the user. destination are all indices after o
     body = {
         "locations": locations,
         "sources": [0],
         "destinations": list(range(1, len(locations))),
-        "metrics": ["distance"] # return only the distance metrics
+        "metrics": ["distance"]
     }
     
     distance_map = {}
     
     try:
-        #send the batch request with a strict 4-second timeout guardrail
         response = requests.post(url, json=body, headers=headers, timeout=4)
-        
         if response.status_code == 200:
             data = response.json()
-            #convert to km since ORS returns distances in meters
             api_distances = data["distances"][0]
             
             for index, restaurant in enumerate(restaurants):
@@ -81,15 +69,42 @@ def batch_calculate_distances(user_lat, user_lon, restaurants):
                 if raw_distance is not None:
                     distance_map[restaurant["name"]] = raw_distance/1000.0
                 else:
-                    #fallback if a single location cannot be snapped to a road mapping
                     distance_map[restaurant["name"]] = calculate_haversine(user_lat, user_lon, restaurant["lat"], restaurant["lon"])
             return distance_map
     except (requests.exceptions.RequestException, KeyError, ValueError):
-        #catch network timeouts, connection drops or wrong schema errors silently
         pass
 
-        
-    #if anything failed above, instantly run calculations locally
     for restaurant in restaurants:
         distance_map[restaurant["name"]] = calculate_haversine(user_lat, user_lon, restaurant["lat"], restaurant["lon"])
     return distance_map
+
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == 'POST':
+        # Grab the database records
+        restaurants_list = load_knowledge_base()
+        
+        # Hardcoded coordinates for USIU area/Nairobi testing to feed the distance engine
+        user_lat, user_lon = -1.221, 36.883 
+        
+        # Calculate distances using your teammate's backend matrix
+        distances = batch_calculate_distances(user_lat, user_lon, restaurants_list)
+        
+        # Attach the calculated distances and a mock rating for your UI layout to display
+        for r in restaurants_list:
+            r['distance'] = round(distances.get(r['name'], 0.0), 1)
+            r['match_rating'] = 4 # Temporary visual placeholder for stars
+            r['description'] = f"A great spot located in {r.get('location', 'Nairobi')}."
+
+        return render_template('search.html', restaurants=restaurants_list)
+    
+    return render_template('search.html', restaurants=[])
+
+if __name__ == '__main__':
+    app.run(debug=True)
