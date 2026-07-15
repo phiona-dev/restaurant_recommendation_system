@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Restaurants - Restaurant Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <nav>
+        <a>
+            Restaurant<span>Finder</span>
+        </a>
+        <a><-Back Home</a>
+    </nav>
+
+    <main>
+        <form>
+            <div>
+                <input>
+                <button>Search</button>
+            </div>
+
+            <div>
+                <!--cuisine filter-->
+                <div>
+                    <span>Cuisine:</span>
+                    <select>
+                        <option>Any</option>
+                        <option>African</option>
+                        <option>Indian</option>
+                        <option>Italian</option>
+                        <option>Fast Food</option>
+                    </select>
+                </div>
+
+                <!--distance filter-->
+                <div>
+                    <span>Distance:</span>
+                    <select>
+                        <option>Within 5KM</option>
+                        <option>Within 10KM</option>
+                        <option>Within 20KM</option>
+                    </select>
+                </div>
+
+                <!--Dietary filter-->
+                <div>
+                    <span>Dietary:</span>
+                    <select>
+                        <option>None</option>
+                        <option>Halal</option>
+                        <option>Vegetarian</option>
+                    </select>
+                </div>
+
+                <!--hidden inputs to safely pass geolocation coordinates-->
+                <input type="hidden" name="latitude" value="-1.2833">
+                <input type="hidden" name="longitude" value="36.8219">
+            </div>
+        </form>
+
+        <div>
+            <h3>Recommended Restaurants</h3>
+            <span>Number of Restaurants found</span>
+        </div>
+    </main>
+</body>
