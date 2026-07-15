@@ -4,6 +4,8 @@ import math
 import requests
 from flask import Flask , render_template, request #flask toolkit
 from dotenv import load_dotenv
+from flask import Flask, render_template, request, abort  # Added abort
+from urllib.parse import unquote                          # Added unquote to decode URLs
 
 #load environment variables from the .env file immediately on startup
 load_dotenv()
@@ -216,6 +218,63 @@ def recommend_restaurants():
     results = run_inference_engine(user_preferences, knowledge_base)
     
     return render_template("results.html", restaurants=results)
+
+  
+ """
+
+
+#this is added route to handle the detailed restaurant page
+@app.route('/restaurant/<string:name>')
+def restaurant_detail(name):
+    """
+    Handles fetching and showing the detailed layout page for a single restaurant
+    """
+    # Clean up the URL-encoded name (e.g., converting 'Sakura%20Sushi' back to 'Sakura Sushi')
+    decoded_name = unquote(name)
+    
+    # Load the master list of hotels/restaurants
+    knowledge_base = load_knowledge_base()
+    
+    # Scan the JSON knowledge base for a name match (case-insensitive)
+    restaurant = next((r for r in knowledge_base if r["name"].lower() == decoded_name.lower()), None)
+    
+    # Safety guardrail: bounce back a 404 error if someone modifies the URL manually to a fake hotel
+    if not restaurant:
+        abort(404)
+        
+    # Heuristic fallback if an explicit 'about' string field isn't set in your JSON database yet
+    if "about" not in restaurant:
+        restaurant["about"] = f"World-famous for its incredible premium selection of curated dishes, local {restaurant.get('cuisine', 'gourmet')} specialties, and an unparalleled ambiance right here in {restaurant.get('location', 'Nairobi')}."
+    
+    # Mocking sample menu structure array matching your system's layout assets
+    sample_menu = [
+        {"name": "Grilled Platter", "img": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500"},
+        {"name": "Artisan Pizza", "img": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500"},
+        {"name": "Garden Salad", "img": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500"},
+        {"name": "Stack Pancakes", "img": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500"},
+        {"name": "Classic Burger", "img": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500"},
+        {"name": "Seafood Pasta", "img": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500"}
+    ]
+    
+    # Generate an explicit query intent link for web or mobile native redirection mapping
+    # Pulls lat/lon properties straight out of your database layout structure
+    lat = restaurant.get("lat", -1.2833)
+    lon = restaurant.get("lon", 36.8219)
+    maps_url = f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
+    
+    # Format a safe display metric match score percentage
+    # (Defaulting to a safe backup calculation value if called outside of recommendation cache contexts)
+    match_percentage = restaurant.get("match_score", 94.0)
+
+    return render_template(
+        "detail.html", 
+        restaurant=restaurant, 
+        menu=sample_menu, 
+        maps_url=maps_url,
+        match_percentage=match_percentage
+    )
+=======
+"""
     
 if __name__ == "__main__":
     app.run(debug=True)
