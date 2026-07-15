@@ -219,6 +219,9 @@ def recommend_restaurants():
     
     return render_template("results.html", restaurants=results)
 
+  
+ """
+
 
 #this is added route to handle the detailed restaurant page
 @app.route('/restaurant/<string:name>')
@@ -270,6 +273,8 @@ def restaurant_detail(name):
         maps_url=maps_url,
         match_percentage=match_percentage
     )
+=======
+"""
     
 if __name__ == "__main__":
     app.run(debug=True)
