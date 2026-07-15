@@ -2,5 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Restaurant Expert System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-50 font-sans min-h-screen flex items-center">
+    <div class="max-w-6xl mx-auto px-6 py-12 w-full grid md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-4 text-center md:text-left">
+            <h1 class="text-sm font-bold uppercase tracking-widest text-orange-600">
+                Restaurant Finder</h1>
+            <h2 class="text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                Find your next <br class="hidden md:inline">
+                <span class="text-orange-500">perfect culinary match.</span>
+            </h2>
+            <p class="text-lg text-gray-600 max-w-md pt-2">
+                An expert recommendation system that sifts through budgets, dietary preferences, and real-world distances to find exactly what you crave. No endless scrolling. Just great food.
+            </p>
+
+            <div class="pt-4">
+                <a href="/templates/discover.html" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">Get Started</a>
+            </div>
+        </div>
+
+        <div class="flex justify-center order-1 md:order-2">
+            <div class="relative w-80 h-80 sm:w-[450px] sm:h-[450px] rounded-full overflow-hidden border-8 border-white shadow-2xl ring-4 ring-orange-100">
+                <img 
+                    src="https://images.unsplash.com/photo-1682862279256-b2a9e4f3d22c?w=800&auto=format&fit=crop" 
+                    alt="A table filled with lots of different types of food" 
+                    class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                >
+            </div>
+        </div>
+    </div>
+
+    
+</body>
