@@ -69,9 +69,10 @@
                         <label for="budget_tier" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Budget Tier</label>
                         <select id="budget_tier" name="budget_tier" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white text-sm transition-all">
                             <option value="Any" {% if current_filters.budget == 'Any' %}selected{% endif %}>Any Budget</option>
-                            <option value="$" {% if current_filters.budget == '$' %}selected{% endif %}>$ (Value)</option>
-                            <option value="$$" {% if current_filters.budget == '$$' %}selected{% endif %}>$$ (Moderate)</option>
-                            <option value="$$$" {% if current_filters.budget == '$$$' %}selected{% endif %}>$$$ (Fine Dining)</option>
+                            <option value="$" {% if current_filters.budget == '$' %}selected{% endif %}>(Value - Under KES 800)</option>
+                            <option value="$$" {% if current_filters.budget == '$$' %}selected{% endif %}>(Moderate - KES 800 - 2000)</option>
+                            <option value="$$$" {% if current_filters.budget == '$$$' %}selected{% endif %}>(Premium - KES 2000 - 3500)</option>
+                            <option value="$$$" {% if current_filters.budget == '$$$' %}selected{% endif %}>(Fine Dining - Over KES 3500)</option>
                         </select>
                     </div>
 
