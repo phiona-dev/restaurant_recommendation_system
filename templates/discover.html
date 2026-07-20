@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Restaurants - Restaurant Finder</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-900 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-100 py-4 px-6 sm:px-12 flex justify-between items-center sticky top-0 z-50">
+        <a href="/" class="text-xl font-bold tracking-tight text-gray-900">
+            Restaurant<span class="text-orange-500">Finder</span>
+        </a>
+        <a href="/" class="text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors">Home</a>
+    </nav>
+
+    <!-- Main Container: Sidebar + Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- 1. Sidebar: Search and Filter Form -->
+            <aside class="lg:col-span-1 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit sticky top-24">
+                <h2 class="text-lg font-bold text-gray-900 mb-6">Refine Search</h2>
+                
+                <form action="/discover" method="POST" class="space-y-6">
+                    
+                    <!-- Text Search Input -->
+                    <div>
+                        <label for="search_query" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Keyword</label>
+                        <input 
+                            type="text" 
+                            id="search_query" 
+                            name="search_query" 
+                            placeholder="e.g. Pizza, Sultan..." 
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white text-sm transition-all"
+                        >
+                    </div>
+
+                    <!-- Cuisine Preference -->
+                    <div>
+                        <label for="preferred_cuisine" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Cuisine</label>
+                        <select id="preferred_cuisine" name="preferred_cuisine" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white text-sm transition-all">
+                            <option value="Any" {% if current_filters.cuisine == 'Any' %}selected{% endif %}>Any Cuisine</option>
+                            <option value="African" {% if current_filters.cuisine == 'African' %}selected{% endif %}>African</option>
+                            <option value="Indian" {% if current_filters.cuisine == 'Indian' %}selected{% endif %}>Indian</option>
+                            <option value="Middle Eastern" {% if current_filters.cuisine == 'Middle Eastern' %}selected{% endif %}>Middle Eastern</option>
+                            <option value="Italian" {% if current_filters.cuisine == 'Italian' %}selected{% endif %}>Italian</option>
+                            <option value="Fast Food" {% if current_filters.cuisine == 'Fast Food' %}selected{% endif %}>Fast Food</option>
+                            <option value="International" {% if current_filters.cuisine == 'International' %}selected{% endif %}>International</option>
+
+                        </select>
+                    </div>
+
+                    <!-- Dietary Restrictions -->
+                    <div>
+                        <label for="dietary_restriction" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Dietary Options</label>
+                        <select id="dietary_restriction" name="dietary_restriction" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white text-sm transition-all">
+                            <option value="None" {% if current_filters.dietary == 'None' %}selected{% endif %}>No Restrictions</option>
+                            <option value="Halal" {% if current_filters.dietary == 'Halal' %}selected{% endif %}>Halal</option>
+                            <option value="Vegetarian" {% if current_filters.dietary == 'Vegetarian' %}selected{% endif %}>Vegetarian Only</option>
+                        </select>
+                    </div>
+
+                    <!-- Budget Tier -->
+                    <div>
+                        <label for="budget_tier" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Budget Tier</label>
+                        <select id="budget_tier" name="budget_tier" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white text-sm transition-all">
+                            <option value="Any" {% if current_filters.budget == 'Any' %}selected{% endif %}>Any Budget</option>
+                            <option value="$" {% if current_filters.budget == '$' %}selected{% endif %}>(Value - Under KES 800)</option>
+                            <option value="$$" {% if current_filters.budget == '$$' %}selected{% endif %}>(Moderate - KES 800 - 2000)</option>
+                            <option value="$$$" {% if current_filters.budget == '$$$' %}selected{% endif %}>(Premium - KES 2000 - 3500)</option>
+                            <option value="$$$" {% if current_filters.budget == '$$$' %}selected{% endif %}>(Fine Dining - Over KES 3500)</option>
+                        </select>
+                    </div>
+
+                    <!-- Distance Limit -->
+                    <div>
+                        <label for="distance_radius" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Max Distance (km)</label>
+                        <select id="distance_radius" name="distance_radius" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white text-sm transition-all">
+                            <option value="5.0" {% if current_filters.max_distance == '5.0' %}selected{% endif %}>Within 5 km</option>
+                            <option value="10.0" {% if current_filters.max_distance == '10.0' %}selected{% endif %}>Within 10 km</option>
+                            <option value="25.0" {% if current_filters.max_distance == '25.0' %}selected{% endif %}>Within 25 km</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-xl transition-colors duration-200 text-sm shadow-sm">
+                        Apply Preferences
+                    </button>
+                </form>
+            </aside>
+
+            <!-- 2. Results Section -->
+            <main class="lg:col-span-3">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Personalized Matches</h1>
+                        <p class="text-gray-500 text-sm mt-1">We found {{ restaurants|length }} culinary matches near Nairobi</p>
+                    </div>
+                </div>
+
+                {% if restaurants %}
+                    <!-- Results Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for restaurant in restaurants %}
+                            <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col hover:shadow-md transition-shadow duration-300">
+                                
+                                <!-- Card Image Header -->
+                                <div class="relative aspect-[16/10] bg-gray-100 overflow-hidden">
+                                    <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}" class="w-full h-full object-cover">
+                                    
+                                    <!-- Dynamic Match Score Pill -->
+                                    <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-sm flex items-center space-x-1 border border-white">
+                                        <span class="text-[10px] uppercase font-black text-orange-500 tracking-wider">Match</span>
+                                        <span class="text-sm font-black text-gray-900">{{ restaurant.match_score }}%</span>
+                                    </div>
+
+                                    <!-- Rating Pill -->
+                                    <div class="absolute bottom-4 left-4 bg-gray-900/80 backdrop-blur-sm text-white px-2.5 py-1 rounded-xl text-xs font-bold">
+                                        ★ {{ restaurant.rating }}
+                                    </div>
+                                </div>
+
+                                <!-- Card Content -->
+                                <div class="p-6 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center space-x-2 mb-2">
+                                            <span class="text-xs font-bold text-orange-500 uppercase tracking-wider">{{ restaurant.cuisine }}</span>
+                                            <span class="text-gray-300">•</span>
+                                            <span class="text-xs font-bold text-gray-400">{{ restaurant.budget_tier }}</span>
+                                        </div>
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ restaurant.name }}</h3>
+                                        <p class="text-gray-500 text-sm line-clamp-2 mb-4">{{ restaurant.description }}</p>
+                                        
+                                        <!-- Diet Badges -->
+                                        <div class="flex flex-wrap gap-1.5 mb-6">
+                                            {% for option in restaurant.dietary_options %}
+                                                <span class="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-md">{{ option }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- Link to the matching Flask dynamic routing detail page -->
+                                    <a href="/restaurant/{{ restaurant.name }}" class="block text-center bg-gray-50 hover:bg-orange-50 text-gray-900 hover:text-orange-600 font-bold py-3 px-4 rounded-2xl transition-all duration-200 text-sm border border-gray-100 hover:border-orange-100">
+                                        View Details & Menu
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- No Results Fallback -->
+                    <div class="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto mt-12">
+                        <div class="text-4xl mb-4">🍽️</div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">No matching eateries found</h3>
+                        <p class="text-gray-500 text-sm mb-6">Try relaxing your dietary filters, increasing your distance radius, or checking your spelling.</p>
+                        <a href="/discover" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors">
+                            Reset Filters
+                        </a>
+                    </div>
+                {% endif %}
+            </aside>
+            
+        </div>
+    </div>
+
+</body>
+</html>

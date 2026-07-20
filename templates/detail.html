@@ -1,0 +1,96 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ restaurant.name }} - Discover Nairobi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <nav>
+        <a>Restaurant
+            <span>Finder</span>
+        </a>
+        <a>
+            Back to Discover
+        </a>
+    </nav>
+
+    <main>
+        <div>
+            <div>
+                <img
+                    src="{{ restaurant.image_url }}"
+                    alt="{{ restaurant.name }}"
+                >
+                
+                <div>
+                    {{ restaurant.match_score if restaurant.match_score else '94' }}% Match Score
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <div>
+                        <span>
+                        {{ restaurant.cuisine }}
+                        </span>
+                        <span>
+                            {{ restaurant.location }}
+                        </span>
+                        <span>
+                            {{ restaurant.rating }}
+                        </span>
+                    </div>
+
+                    <h1>
+                    {{ restaurant.name }}
+                    </h1>
+
+                    <p>
+                        {{ restaurant.description }}
+                    </p>
+                </div>
+                
+
+                <div>
+                    <div>
+                        <span>Food Quality</span>
+                        <spa>{{ restaurant.quality_of_food if restaurant.quality_of_food else '5' }} / 5</spa>
+                    </div>
+                    <div>
+                        <span>Aesthetics</span>
+                        <span>{{ restaurant.aesthetics if restaurant.aesthetics else '4' }} / 5</span>
+                    </div>
+                    <div>
+                        <span>Service</span>
+                        <span>{{ restaurant.customer_service if restaurant.customer_service else '4' }} / 5</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <span>Budget Bracket</span>
+                    <span>{{ restaurant.budget_tier }}</span>
+                </div>
+                <div>
+                    <span>Dietary Suitability</span>
+                    <div>
+                        {% for diet in restaurant.dietary_options %}
+                            <span>{{ diet }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <span>Operating Hours</span>
+                    <span>{{ restaurant.hours if restaurant.hours else '9:00 AM - 10:00 PM' }}</span>
+                </div>
+                <div>
+                    <span>Contact Number</span>
+                    <span>{{ restaurant.phone if restaurant.phone else '+254 700 123 456' }}</span>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
