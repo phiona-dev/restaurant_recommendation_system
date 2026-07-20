@@ -151,9 +151,8 @@ def run_inference_engine(user_prefs, knowledge_base):
     return final_ranked_recommendations
 
 
-# ==========================================
+
 # FLASK ROUTES
-# ==========================================
 
 # Page 1: Landing Page
 @app.route("/")
