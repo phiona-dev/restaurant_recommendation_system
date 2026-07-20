@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Next Meal - CraverMind</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #f3700b;
+            --primary-gradient: linear-gradient(135deg, #ff9f43, #ff4757);
+            --btn-gradient: linear-gradient(135deg, #f39c12, #f3700b);
+            --bg-light: #ffffff; 
+            --text-dark: #2f3542;
+            --text-muted: #747d8c;
+            --border-color: #ced6e0;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.82)), 
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat fixed;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Unified 1000px App Wrapper Grid */
+        .dashboard-wrapper {
+            max-width: 1000px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-container {
+            background: var(--card-bg);
+            width: 100%;
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(243, 112, 11, 0.1);
+            box-sizing: border-box;
+            margin-bottom: 40px;
+        }
+
+        .header-wrapper {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .back-home:hover {
+            opacity: 0.8;
+        }
+
+        .brand-logo {
+            font-size: 42px;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+            letter-spacing: -1.5px;
+        }
+
+        .brand-logo .orange-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-logo .serif-text {
+            font-family: 'Playfair Display', serif;
+            color: #1e2229;
+            font-weight: 700;
+            margin-left: -3px;
+        }
+
+        .form-container h2 {
+            margin: 0 0 8px 0;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .form-container .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 0;
+            font-size: 15px;
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        .search-input-wrapper input[type="text"] {
+            padding-left: 45px;
+            border: 2px solid #f1f2f6;
+            background-color: #fafdff;
+            font-size: 16px;
+            height: 52px;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 10px;
+        }
+
+        .search-input-wrapper input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(243, 112, 11, 0.08);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .horizontal-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .horizontal-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #3d4656;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 14px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+            background-color: #fafafa;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(243, 112, 11, 0.05);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            background: var(--btn-gradient);
+            color: white;
+            margin-top: 15px;
+            box-shadow: 0 6px 20px rgba(243, 112, 11, 0.25);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(243, 112, 11, 0.35);
+        }
+
+        .section-heading {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            border-left: 4px solid var(--primary-orange);
+            padding-left: 12px;
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .restaurant-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            border: 1px solid #f1f2f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .restaurant-name {
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        .match-badge {
+            background: #fff3eb;
+            color: var(--primary-orange);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .meta-info {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .info-tag {
+            font-size: 11px;
+            background: #f1f2f6;
+            color: #57606f;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .rating-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f5f6fa;
+            padding-top: 14px;
+            margin-top: auto;
+        }
+
+        .stars {
+            color: #ffa502;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .location-text {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 16px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .horizontal-row { flex-direction: column; gap: 25px; }
+            .form-container { padding: 35px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-wrapper">
+        <div class="form-container">
+            <a href="/" class="back-home">← Back to Home</a>
+            
+            <div class="header-wrapper">
+                <h1 class="brand-logo"><span class="orange-text">Craver</span><span class="serif-text">Mind</span></h1>
+                <h2>Find Your Next Meal</h2>
+                <p class="subtitle">Filter through our intelligent constraint matrix engine to find your perfect match.</p>
+            </div>
+
+            <form action="/recommend" method="POST">
+                <input type="hidden" id="latitude" name="latitude" value="-1.2833">
+                <input type="hidden" id="longitude" name="longitude" value="36.8219">
+
+                <div class="form-group">
+                    <label for="search_name">Search by Restaurant Name</label>
+                    <div class="search-input-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search_name" name="search_name" placeholder="e.g., CJ's, For You Chinese, Slate...">
+                    </div>
+                </div>
+
+                <div class="horizontal-row">
+                    <div class="form-group">
+                        <label for="dietary_restriction">Dietary Alignment</label>
+                        <select name="dietary_restriction" id="dietary_restriction">
+                            <option value="None">No Restrictions</option>
+                            <option value="Vegan">Vegan</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Halal">Halal</option>
+                            <option value="Gluten-Free">Gluten-Free</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget_tier">Target Budget</label>
+                        <select name="budget_tier" id="budget_tier">
+                            <option value="Any">Any Budget Range</option>
+                            <option value="$">Cheap (Ksh 500 - 1,000)</option>
+                            <option value="$$">Moderate (Ksh 1,000 - 1,500)</option>
+                            <option value="$$$">Expensive (Ksh 1,500+)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="preferred_cuisine">Cuisine Type</label>
+                        <select name="preferred_cuisine" id="preferred_cuisine">
+                            <option value="Any">Any Cuisine</option>
+                            <option value="Italian">Italian</option>
+                            <option value="American">American</option>
+                            <option value="Continental">Continental</option>
+                            <option value="African">African</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Ethiopian">Ethiopian</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="distance_radius">Maximum Distance Radius (km)</label>
+                    <input type="number" name="distance_radius" id="distance_radius" min="1" max="50" step="0.5" placeholder="e.g., 5" value="5">
+                </div>
+
+                <button type="submit" class="btn-submit">Find Restaurants</button>
+            </form>
+        </div>
+
+        <h3 class="section-heading">Available Matches</h3>
+        <div class="restaurant-grid">
+            {% for restaurant in restaurants %}
+                {% if loop.index <= 20 %}
+                    <div class="restaurant-card" onclick="window.location.href='/restaurant/{{ restaurant.name | urlencode }}'">
+                        <div>
+                            <div class="card-header">
+                                <h4 class="restaurant-name">{{ restaurant.name }}</h4>
+                                <span class="match-badge">🎯 {{ restaurant.match_score }}% Match</span>
+                            </div>
+                            
+                            <div class="meta-info">
+                                <span>💰 Budget: {{ restaurant.budget_tier }}</span>
+                                <span>🍽️ {{ restaurant.cuisine }}</span>
+                            </div>
+
+                            <div class="tag-container">
+                                {% for option in restaurant.dietary_options %}
+                                    <span class="info-tag" style="background:#e3fcef; color:#00875a;">🌿 {{ option }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="rating-row">
+                            <span class="stars">⭐ {{ restaurant.rating if restaurant.rating else '4.0' }} / 5.0</span>
+                            <span class="location-text">Nairobi</span>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="no-results">
+                    📭 No restaurants matched your criteria yet. Try updating your parameters above!
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
