@@ -2,7 +2,7 @@ import os
 import json
 import math
 import requests
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, jsonify
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -235,6 +235,32 @@ def detail_page(res_name):
         menu=sample_menu, 
         maps_url=maps_url
     )
+
+
+@app.route("/api/quiz-recommend", methods=["POST"])
+def quiz_recommend():
+    """Receive quiz facts and process them via the inference engine and returns matched results"""
+    data = request.get_json() or {}
+    
+    #map popup quiz keys to what the inference-engine expects
+    user_prefs = {
+        "lat": data.get("lat", -1.2833),
+        "lon": data.get("lon", 36.8219),
+        "dietary": data.get("dietary", "None"),
+        "budget": data.get("budget", "Any"),
+        "cuisine": data.get("cuisine", "Any"),
+        "max-distance": data.get("max_distance", "10.0")
+    }
+    
+    knowledge_base = load_knowledge_base()
+    results = run_inference_engine(user_prefs, knowledge_base)
+    
+    return jsonify({
+        "status": "success",
+        "total_matches": len(results),
+        "results": results,
+        "preferences": user_prefs
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
