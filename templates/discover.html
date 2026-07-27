@@ -14,7 +14,10 @@
         <a href="/" class="text-xl font-bold tracking-tight text-gray-900">
             Restaurant<span class="text-orange-500">Finder</span>
         </a>
-        <a href="/" class="text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors">Home</a>
+        <div class="flex items-center gap-4">
+            <a href="/quiz" class="text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors">Retake Quiz</a>
+            <a href="/" class="text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors">Home</a>
+        </div>
     </nav>
 
     <!-- Main Container: Sidebar + Grid -->
@@ -97,6 +100,9 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                     <div>
                         <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Personalized Matches</h1>
+                        {% if from_quiz %}
+                        <p class="text-orange-500 text-sm font-semibold mt-1">Based on your taste quiz answers</p>
+                        {% endif %}
                         <p class="text-gray-500 text-sm mt-1">We found {{ restaurants|length }} culinary matches near Nairobi</p>
                     </div>
                 </div>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taste Quiz — Restaurant Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-gray-900 font-sans min-h-screen text-white">
+
+    <nav class="px-6 py-4 flex justify-between items-center border-b border-gray-800">
+        <a href="/" class="text-lg font-bold tracking-tight">
+            Restaurant<span class="text-orange-500">Finder</span>
+        </a>
+        <a href="/discover" class="text-sm text-gray-400 hover:text-white transition-colors">Skip quiz →</a>
+    </nav>
+
+    <!-- Progress bar -->
+    <div class="h-1.5 bg-gray-800 w-full">
+        <div id="progress-bar" class="h-full bg-orange-500 transition-all duration-500 ease-out" style="width: 0%"></div>
+    </div>
+
+    <main class="max-w-3xl mx-auto px-4 py-10 sm:py-16">
+        <div id="quiz-card" class="space-y-8">
+
+            <!-- Header row: segment, timer, status -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <p id="segment-label" class="text-xs font-bold uppercase tracking-widest text-orange-400">Question 1 / 5</p>
+                    <p id="category-label" class="text-sm text-gray-500 mt-1">Preferences</p>
+                </div>
+                <div class="flex items-center gap-6">
+                    <p id="status-label" class="text-sm font-bold text-amber-400 uppercase tracking-wider">LIVE</p>
+                    <div class="flex flex-col items-center">
+                        <span class="text-[10px] uppercase text-gray-500 font-bold tracking-wider">Time</span>
+                        <span id="timer-label" class="text-4xl font-black tabular-nums leading-none">20</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question card -->
+            <div class="bg-gray-800/80 backdrop-blur rounded-3xl border border-gray-700 p-8 sm:p-12 shadow-2xl min-h-[140px] flex items-center justify-center">
+                <h1 id="question-text" class="text-2xl sm:text-3xl font-extrabold text-center leading-snug">
+                    Loading question...
+                </h1>
+            </div>
+
+            <!-- Answer options (Kahoot-style colored buttons) -->
+            <div id="answer-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Buttons injected by quiz.js -->
+            </div>
+
+            <p class="text-center text-gray-600 text-sm">
+                Tap an option to lock in your answer — just like a live quiz.
+            </p>
+        </div>
+    </main>
+
+    <script>
+        const QUESTIONS = {{ questions | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='quiz.js') }}"></script>
+</body>
+</html>

@@ -19,6 +19,26 @@ def load_knowledge_base():
             return json.load(f)
     except FileNotFoundError:
         return []
+
+
+def load_survey_questions():
+    """Loads Kahoot-style preference survey questions."""
+    try:
+        with open("survey_questions.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+
+def default_user_preferences():
+    return {
+        "lat": -1.2833,
+        "lon": 36.8219,
+        "dietary": "None",
+        "budget": "Any",
+        "cuisine": "Any",
+        "max_distance": "10.0",
+    }
     
 # Fallback distance calculations
 def calculate_haversine(lat1, lon1, lat2, lon2):
@@ -160,16 +180,41 @@ def landing_page():
     return render_template("landing.html")
 
 
-# Page 2: Discovery Page
+# Page 2: Kahoot-style preference quiz
+@app.route("/quiz")
+def quiz_page():
+    questions = load_survey_questions()
+    if not questions:
+        abort(404)
+    return render_template("quiz.html", questions=questions)
+
+
+@app.route("/quiz/submit", methods=["POST"])
+def quiz_submit():
+    restaurants_db = load_knowledge_base()
+    user_preferences = default_user_preferences()
+
+    payload = request.get_json(silent=True) or {}
+    for key in ("dietary", "budget", "cuisine", "max_distance", "lat", "lon"):
+        if key in payload and payload[key]:
+            user_preferences[key] = payload[key]
+
+    results = run_inference_engine(user_preferences, restaurants_db)
+    return render_template(
+        "discover.html",
+        restaurants=results,
+        current_filters=user_preferences,
+        from_quiz=True,
+    )
+
+
+# Page 3: Discovery Page
 @app.route("/discover", methods=["GET", "POST"])
 def discover_page():
     # Pulls directly from your real local restaurants.json file!
     restaurants_db = load_knowledge_base()
     
-    user_preferences = {
-        "lat": -1.2833, "lon": 36.8219,
-        "dietary": "None", "budget": "Any", "cuisine": "Any", "max_distance": "10.0"
-    }
+    user_preferences = default_user_preferences()
     
     if request.method == "POST":
         user_preferences["dietary"] = request.form.get("dietary_restriction", "None")
@@ -188,10 +233,15 @@ def discover_page():
             ]
   
     results = run_inference_engine(user_preferences, restaurants_db)
-    return render_template("discover.html", restaurants=results, current_filters=user_preferences)
+    return render_template(
+        "discover.html",
+        restaurants=results,
+        current_filters=user_preferences,
+        from_quiz=False,
+    )
 
 
-# Page 3: Dedicated Detailed View Page
+# Page 4: Dedicated Detailed View Page
 @app.route('/restaurant/<string:res_name>')
 def detail_page(res_name):
     db = load_knowledge_base()

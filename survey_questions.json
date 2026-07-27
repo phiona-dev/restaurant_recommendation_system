@@ -1,0 +1,60 @@
+[
+  {
+    "id": 1,
+    "questionText": "What cuisine are you craving tonight?",
+    "category": "Cuisine",
+    "timeLimitSeconds": 20,
+    "options": [
+      { "label": "African", "prefs": { "cuisine": "African" } },
+      { "label": "Indian", "prefs": { "cuisine": "Indian" } },
+      { "label": "Italian", "prefs": { "cuisine": "Italian" } },
+      { "label": "Surprise me — any cuisine", "prefs": { "cuisine": "Any" } }
+    ]
+  },
+  {
+    "id": 2,
+    "questionText": "Any dietary restrictions we should know about?",
+    "category": "Dietary",
+    "timeLimitSeconds": 15,
+    "options": [
+      { "label": "No restrictions", "prefs": { "dietary": "None" } },
+      { "label": "Halal only", "prefs": { "dietary": "Halal" } },
+      { "label": "Vegetarian only", "prefs": { "dietary": "Vegetarian" } }
+    ]
+  },
+  {
+    "id": 3,
+    "questionText": "What's your budget for tonight?",
+    "category": "Budget",
+    "timeLimitSeconds": 15,
+    "options": [
+      { "label": "Value — under KES 800", "prefs": { "budget": "$" } },
+      { "label": "Moderate — KES 800–2000", "prefs": { "budget": "$$" } },
+      { "label": "Premium — KES 2000–3500", "prefs": { "budget": "$$$" } },
+      { "label": "Any budget works", "prefs": { "budget": "Any" } }
+    ]
+  },
+  {
+    "id": 4,
+    "questionText": "How far are you willing to travel?",
+    "category": "Distance",
+    "timeLimitSeconds": 15,
+    "options": [
+      { "label": "Within 5 km", "prefs": { "max_distance": "5.0" } },
+      { "label": "Within 10 km", "prefs": { "max_distance": "10.0" } },
+      { "label": "Within 25 km", "prefs": { "max_distance": "25.0" } }
+    ]
+  },
+  {
+    "id": 5,
+    "questionText": "What kind of dining vibe are you after?",
+    "category": "Vibe",
+    "timeLimitSeconds": 15,
+    "options": [
+      { "label": "Quick & casual", "prefs": { "cuisine": "Fast Food" } },
+      { "label": "Middle Eastern flavours", "prefs": { "cuisine": "Middle Eastern" } },
+      { "label": "International variety", "prefs": { "cuisine": "International" } },
+      { "label": "Stick with my earlier pick", "prefs": {} }
+    ]
+  }
+]
