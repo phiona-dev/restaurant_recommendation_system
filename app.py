@@ -1,241 +1,267 @@
-import os
-import json
 import math
-import requests
-from flask import Flask, render_template, request, abort
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-ORS_API_KEY = os.environ.get("ORS_API_KEY", "MISSING_API_KEY_IN_ENV")
+# =========================================================
+# KNOWLEDGE BASE: Restaurant Domain Facts
+# =========================================================
+RESTAURANTS_KB = [
+    {
+        "id": 1,
+        "name": "Carnivore Restaurant",
+        "cuisine": "African",
+        "dietary_options": ["Halal"],
+        "budget_tier": "$$$",
+        "quality_of_food": 4.8,
+        "aesthetics": 4.6,
+        "customer_service": 4.7,
+        "lat": -1.3323,
+        "lon": 36.7905,
+        "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop",
+        "description": "An iconic open-air meat buffet dining experience featuring traditional African roasted meats and game."
+    },
+    {
+        "id": 2,
+        "name": "Haandi Restaurant",
+        "cuisine": "Indian",
+        "dietary_options": ["Vegetarian", "Halal"],
+        "budget_tier": "$$",
+        "quality_of_food": 4.7,
+        "aesthetics": 4.3,
+        "customer_service": 4.5,
+        "lat": -1.2650,
+        "lon": 36.8050,
+        "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&auto=format&fit=crop",
+        "description": "Renowned North Indian culinary experience with rich curries, naan, and signature tandoori dishes."
+    },
+    {
+        "id": 3,
+        "name": "Habesha Ethiopian Restaurant",
+        "cuisine": "African",
+        "dietary_options": ["Vegetarian", "Halal"],
+        "budget_tier": "$$",
+        "quality_of_food": 4.6,
+        "aesthetics": 4.5,
+        "customer_service": 4.2,
+        "lat": -1.2885,
+        "lon": 36.7820,
+        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&auto=format&fit=crop",
+        "description": "Authentic Ethiopian dining set in a lush garden, serving traditional communal injera platters."
+    },
+    {
+        "id": 4,
+        "name": "Lucca Italian Restaurant",
+        "cuisine": "Italian",
+        "dietary_options": ["Vegetarian"],
+        "budget_tier": "$$$",
+        "quality_of_food": 4.9,
+        "aesthetics": 4.8,
+        "customer_service": 4.8,
+        "lat": -1.2680,
+        "lon": 36.8070,
+        "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop",
+        "description": "Upscale Italian dining known for hand-crafted pastas, wood-fired pizzas, and refined atmosphere."
+    },
+    {
+        "id": 5,
+        "name": "Al-Yousuf Shawarma & Grill",
+        "cuisine": "Middle Eastern",
+        "dietary_options": ["Halal"],
+        "budget_tier": "$",
+        "quality_of_food": 4.4,
+        "aesthetics": 3.8,
+        "customer_service": 4.1,
+        "lat": -1.2830,
+        "lon": 36.8250,
+        "image": "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&auto=format&fit=crop",
+        "description": "Fast-casual Middle Eastern spot offering flavorful spiced shawarmas, falafel, and mixed grills."
+    },
+    {
+        "id": 6,
+        "name": "Urban Burger",
+        "cuisine": "Fast Food",
+        "dietary_options": ["Halal"],
+        "budget_tier": "$$",
+        "quality_of_food": 4.3,
+        "aesthetics": 4.2,
+        "customer_service": 4.4,
+        "lat": -1.2620,
+        "lon": 36.8020,
+        "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&auto=format&fit=crop",
+        "description": "Gourmet burgers, loaded fries, and thick milkshakes served in a modern, vibrant setting."
+    }
+]
 
-def load_knowledge_base():
-    """Opens and reads the factual knowledge base from the local JSON file."""
-    try:
-        with open("restaurants.json", "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return []
-    
-# Fallback distance calculations
-def calculate_haversine(lat1, lon1, lat2, lon2):
+# Haversine distance calculator in kilometers
+def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371.0
-    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
-    latitude_distance = lat2 - lat1
-    longitude_distance = lon2 - lon1
-    
-    a = math.sin(latitude_distance/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(longitude_distance/2)**2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat / 2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
 
-
-# API matrix routing
 def batch_calculate_distances(user_lat, user_lon, restaurants):
-    if not restaurants:
-        return {}
-    
-    user_coordinates = [user_lon, user_lat]
-    locations = [user_coordinates]
-    for restaurant in restaurants:
-        locations.append([restaurant["lon"], restaurant["lat"]])
-        
-    url = "https://api.openrouteservice.org/v2/matrix/driving-car"
-    headers = {
-        "Authorization": ORS_API_KEY,
-        "Content-Type": "application/json"
+    return {r["name"]: haversine_distance(user_lat, user_lon, r["lat"], r["lon"]) for r in restaurants}
+
+
+# =========================================================
+# EXPERT SYSTEM PRODUCTION RULES
+# =========================================================
+
+HARD_RULES = [
+    {
+        "id": "RULE_HARD_DIET",
+        "description": "Strict Dietary Constraint",
+        "check": lambda prefs, rest: prefs.get("dietary") == "None" or prefs.get("dietary") in rest.get("dietary_options", [])
+    },
+    {
+        "id": "RULE_HARD_BUDGET",
+        "description": "Budget Cap Constraint",
+        "check": lambda prefs, rest: prefs.get("budget") == "Any" or rest.get("budget_tier") == prefs.get("budget")
     }
-    
-    body = {
-        "locations": locations,
-        "sources": [0],
-        "destinations": list(range(1, len(locations))),
-        "metrics": ["distance"]
+]
+
+HEURISTIC_RULES = [
+    {
+        "id": "RULE_CUISINE_MATCH",
+        "weight": 35,
+        "condition": lambda prefs, rest: prefs.get("cuisine") != "Any" and rest.get("cuisine") == prefs.get("cuisine"),
+        "explanation": lambda prefs, rest: f"Matches requested '{rest.get('cuisine')}' cuisine (+35 pts)"
+    },
+    {
+        "id": "RULE_HIGH_FOOD_QUALITY",
+        "weight": 25,
+        "condition": lambda prefs, rest: float(rest.get("quality_of_food", 0)) >= 4.5,
+        "explanation": lambda prefs, rest: f"Top-tier food quality rating of {rest.get('quality_of_food')}/5.0 (+25 pts)"
+    },
+    {
+        "id": "RULE_GREAT_SERVICE",
+        "weight": 15,
+        "condition": lambda prefs, rest: float(rest.get("customer_service", 0)) >= 4.3,
+        "explanation": lambda prefs, rest: f"High customer service score of {rest.get('customer_service')}/5.0 (+15 pts)"
+    },
+    {
+        "id": "RULE_EXCELLENT_AESTHETICS",
+        "weight": 15,
+        "condition": lambda prefs, rest: float(rest.get("aesthetics", 0)) >= 4.4,
+        "explanation": lambda prefs, rest: f"Premium interior aesthetics & dining ambiance (+15 pts)"
     }
-    
-    distance_map = {}
-    
-    try:
-        response = requests.post(url, json=body, headers=headers, timeout=4)
-        if response.status_code == 200:
-            data = response.json()
-            api_distances = data["distances"][0]
-            
-            for index, restaurant in enumerate(restaurants):
-                raw_distance = api_distances[index]
-                if raw_distance is not None:
-                    distance_map[restaurant["name"]] = raw_distance / 1000.0
-                else:
-                    distance_map[restaurant["name"]] = calculate_haversine(user_lat, user_lon, restaurant["lat"], restaurant["lon"])
-            return distance_map
-    except (requests.exceptions.RequestException, KeyError, ValueError):
-        pass
-
-    for restaurant in restaurants:
-        distance_map[restaurant["name"]] = calculate_haversine(user_lat, user_lon, restaurant["lat"], restaurant["lon"])
-    return distance_map
+]
 
 
-def filter_by_hard_constraints(user_prefs, knowledge_base, calculated_distances):
-    surviving_restaurants = []
-    
-    for restaurant in knowledge_base:
-        # 1. Dietary constraint check
-        user_diet = user_prefs.get("dietary", "None")
-        if user_diet != "None":
-            if user_diet not in restaurant.get("dietary_options", []):
-                continue
-        
-        # 2. Budget tier check
-        user_budget = user_prefs.get("budget", "Any")
-        if user_budget != "Any":
-            if restaurant.get("budget_tier") != user_budget:
-                continue
-        
-        # 3. Distance range check
-        actual_distance = calculated_distances.get(restaurant["name"], 0)
-        max_allowed_distance = user_prefs.get("max_distance")
-        if max_allowed_distance:
-            if actual_distance > float(max_allowed_distance):
-                continue
-            
-        surviving_restaurants.append(restaurant)
-        
-    return surviving_restaurants
-
-
-def calculate_match_scores(user_prefs, surviving_restaurants):
-    scored_recommendations = []
-    user_cuisine = user_prefs.get("cuisine", "Any")
-    
-    for restaurant in surviving_restaurants:
-        score = 50.0
-        
-        # 1. Cuisine matching (+30 points)
-        if user_cuisine != "Any":
-            if restaurant.get("cuisine") == user_cuisine:
-                score += 30
-        
-        # 2. Dynamic rating factor from your new data structure (+20 points max)
-        # We calculate an aggregate performance average from quality, aesthetics, and service
-        quality = float(restaurant.get("quality_of_food", 4))
-        aesthetics = float(restaurant.get("aesthetics", 4))
-        service = float(restaurant.get("customer_service", 4))
-        
-        calculated_rating = round((quality + aesthetics + service) / 3.0, 1)
-        score += (calculated_rating * 4.0)
-        
-        if score > 100.0:
-            score = 100.0 
-            
-        scored_item = restaurant.copy()
-        scored_item["match_score"] = round(score, 1)
-        scored_item["rating"] = calculated_rating # Smooth compatibility injection for templates
-        
-        scored_recommendations.append(scored_item)
-        
-    scored_recommendations.sort(key=lambda x: x["match_score"], reverse=True)
-    return scored_recommendations
-
+# =========================================================
+# INFERENCE ENGINE (Forward Chaining Execution)
+# =========================================================
 
 def run_inference_engine(user_prefs, knowledge_base):
     user_lat = float(user_prefs.get("lat", -1.2833))
     user_lon = float(user_prefs.get("lon", 36.8219))
+    max_dist = float(user_prefs.get("max_distance", 10.0))
     
     calculated_distances = batch_calculate_distances(user_lat, user_lon, knowledge_base)
-    surviving_restaurants = filter_by_hard_constraints(user_prefs, knowledge_base, calculated_distances)
-    final_ranked_recommendations = calculate_match_scores(user_prefs, surviving_restaurants)
-    
-    return final_ranked_recommendations
+    ranked_results = []
+
+    for restaurant in knowledge_base:
+        dist = calculated_distances.get(restaurant["name"], 0.0)
+        
+        # 1. Distance Hard Filter
+        if dist > max_dist:
+            continue
+
+        # 2. Hard Rule Evaluation
+        passed_hard_rules = True
+        for rule in HARD_RULES:
+            if not rule["check"](user_prefs, restaurant):
+                passed_hard_rules = False
+                break
+        
+        if not passed_hard_rules:
+            continue
+
+        # 3. Heuristic Soft Rule Evaluation & Explanation Trace
+        score = 10.0
+        explanation_trace = []
+
+        for rule in HEURISTIC_RULES:
+            if rule["condition"](user_prefs, restaurant):
+                score += rule["weight"]
+                explanation_trace.append(rule["explanation"](user_prefs, restaurant))
+
+        explanation_trace.append(f"Located within {round(dist, 1)} km radius")
+
+        final_score = min(round(score, 1), 100.0)
+
+        q = float(restaurant.get("quality_of_food", 4))
+        a = float(restaurant.get("aesthetics", 4))
+        s = float(restaurant.get("customer_service", 4))
+        avg_rating = round((q + a + s) / 3.0, 1)
+
+        result = restaurant.copy()
+        result["match_score"] = final_score
+        result["rating"] = avg_rating
+        result["distance"] = round(dist, 1)
+        result["explanations"] = explanation_trace
+
+        ranked_results.append(result)
+
+    # Conflict Resolution: Sort by highest confidence match score
+    ranked_results.sort(key=lambda x: x["match_score"], reverse=True)
+    return ranked_results
 
 
-# ==========================================
+# =========================================================
 # FLASK ROUTES
-# ==========================================
+# =========================================================
 
-# Page 1: Landing Page
 @app.route("/")
-def landing_page():
+def index():
     return render_template("landing.html")
 
+@app.route("/quiz")
+def quiz_page():
+    return render_template("quiz.html")
 
-# Page 2: Discovery Page
 @app.route("/discover", methods=["GET", "POST"])
 def discover_page():
-    # Pulls directly from your real local restaurants.json file!
-    restaurants_db = load_knowledge_base()
-    
-    user_preferences = {
-        "lat": -1.2833, "lon": 36.8219,
-        "dietary": "None", "budget": "Any", "cuisine": "Any", "max_distance": "10.0"
-    }
-    
     if request.method == "POST":
-        user_preferences["dietary"] = request.form.get("dietary_restriction", "None")
-        user_preferences["budget"] = request.form.get("budget_tier", "Any")
-        user_preferences["cuisine"] = request.form.get("preferred_cuisine", "Any")
-        user_preferences["max_distance"] = request.form.get("distance_radius", "10.0")
-        
-        search_query = request.form.get("search_query", "").lower()
-        if search_query:
-            restaurants_db = [
-                r for r in restaurants_db 
-                if search_query in r["name"].lower() or 
-                   search_query in r.get("description", "").lower() or 
-                   search_query in r.get("cuisine", "").lower() or
-                   search_query in r.get("location", "").lower()
-            ]
-  
-    results = run_inference_engine(user_preferences, restaurants_db)
-    return render_template("discover.html", restaurants=results, current_filters=user_preferences)
+        preferred_cuisine = request.form.get("preferred_cuisine", "Any")
+        dietary_restriction = request.form.get("dietary_restriction", "None")
+        budget_tier = request.form.get("budget_tier", "Any")
+        distance_radius = request.form.get("distance_radius", "10.0")
+    else:
+        preferred_cuisine = request.args.get("preferred_cuisine", "Any")
+        dietary_restriction = request.args.get("dietary_restriction", "None")
+        budget_tier = request.args.get("budget_tier", "Any")
+        distance_radius = request.args.get("distance_radius", "10.0")
 
+    user_preferences = {
+        "cuisine": preferred_cuisine,
+        "dietary": dietary_restriction,
+        "budget": budget_tier,
+        "max_distance": float(distance_radius),
+        "lat": -1.2833,
+        "lon": 36.8219
+    }
 
-# Page 3: Dedicated Detailed View Page
-@app.route('/restaurant/<string:res_name>')
-def detail_page(res_name):
-    db = load_knowledge_base()
-    
-    # Safely scan your JSON structure using the unique text names as routing parameters
-    restaurant_match = next((item for item in db if item["name"].lower() == res_name.lower()), None)
-    
-    if not restaurant_match:
-        abort(404)
-        
-    # Standard template fallback injection for description fields
-    if "description" not in restaurant_match:
-        restaurant_match["description"] = f"A popular gathering spot in {restaurant_match.get('location', 'Nairobi')} specializing in local {restaurant_match.get('cuisine')} culinary crafts."
-        
-    # Injecting safe calculated fields to keep UI layouts clean
-    q = restaurant_match.get("quality_of_food", 4)
-    a = restaurant_match.get("aesthetics", 4)
-    s = restaurant_match.get("customer_service", 4)
-    restaurant_match["rating"] = round((q + a + s) / 3.0, 1)
-    
-    # Mock fallback hours/contact values if missing in JSON schema
-    if "hours" not in restaurant_match:
-        restaurant_match["hours"] = "10:00 AM - 10:00 PM"
-    if "phone" not in restaurant_match:
-        restaurant_match["phone"] = "+254 700 123 456"
-        
-    # Mocking custom signature delicacies showcase grid cards
-    sample_menu = [
-        {"name": "House Special Entrée", "img": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500"},
-        {"name": "Artisanal Side Dish", "img": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500"},
-        {"name": "Gourmet Dessert Selection", "img": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500"}
-    ]
-    
-    lat = restaurant_match.get("lat", -1.2833)
-    lon = restaurant_match.get("lon", 36.8219)
-    maps_url = f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
-    
+    recommendations = run_inference_engine(user_preferences, RESTAURANTS_KB)
+
     return render_template(
-        "detail.html", 
-        restaurant=restaurant_match, 
-        menu=sample_menu, 
-        maps_url=maps_url
+        "discover.html",
+        restaurants=recommendations,
+        prefs=user_preferences
     )
 
+@app.route("/detail/<int:restaurant_id>")
+def detail_page(restaurant_id):
+    # Retrieve matching restaurant from Knowledge Base by ID
+    restaurant = next((r for r in RESTAURANTS_KB if r["id"] == restaurant_id), None)
+    
+    # If invalid ID, safely redirect back to recommendations page
+    if not restaurant:
+        return redirect(url_for("discover_page"))
+        
+    return render_template("detail.html", restaurant=restaurant)
 if __name__ == "__main__":
     app.run(debug=True)

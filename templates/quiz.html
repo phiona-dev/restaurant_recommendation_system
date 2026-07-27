@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert System Preference Quiz - CraverMind</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-amber-50/40 font-sans text-gray-900 min-h-screen flex flex-col justify-center items-center p-4">
+
+    <!-- Header Section -->
+    <div class="text-center max-w-xl mb-8">
+        <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 mb-2">
+            Let's find your <span class="text-orange-500 font-serif italic">perfect match</span>
+        </h1>
+        <p class="text-gray-600 text-sm sm:text-base">
+            Answer a few questions. Our inference engine will fire its rule base to recommend the best restaurant — and explain why.
+        </p>
+    </div>
+
+    <!-- Main Card Wrapper -->
+    <div class="w-full max-w-3xl bg-white rounded-3xl p-6 sm:p-10 border border-orange-100 shadow-xl shadow-orange-500/5">
+        
+        <!-- Progress Bar -->
+        <div class="w-full bg-orange-100 h-2 rounded-full mb-8 overflow-hidden">
+            <div id="progress-bar" class="bg-orange-500 h-full w-1/4 transition-all duration-300"></div>
+        </div>
+
+        <form id="quiz-form" action="/discover" method="POST">
+            
+            <!-- QUESTION 1: CUISINE -->
+            <div class="quiz-step" id="step-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 1 of 4</span>
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">What cuisine are you in the mood for tonight?</h2>
+                <p class="text-sm text-gray-500 mb-6">Pick one — or choose "No preference" to keep every option open.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <label class="option-card border-2 border-orange-500 bg-orange-50/40 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="preferred_cuisine" value="Any" checked class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">No preference</div>
+                            <div class="text-xs text-gray-500">Surprise me</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="preferred_cuisine" value="African" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">African</div>
+                            <div class="text-xs text-gray-500">Local delicacies & grilled dishes</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="preferred_cuisine" value="Indian" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Indian</div>
+                            <div class="text-xs text-gray-500">Curries, naan, & spices</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="preferred_cuisine" value="Middle Eastern" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Middle Eastern</div>
+                            <div class="text-xs text-gray-500">Shawarmas, falafel, & grills</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="preferred_cuisine" value="Italian" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Italian</div>
+                            <div class="text-xs text-gray-500">Pasta, wood-fired pizza</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="preferred_cuisine" value="Fast Food" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Fast Food</div>
+                            <div class="text-xs text-gray-500">Burgers, fries, & quick bites</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- QUESTION 2: DIETARY RESTRICTION -->
+            <div class="quiz-step hidden" id="step-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 2 of 4</span>
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">Do you have any dietary restrictions?</h2>
+                <p class="text-sm text-gray-500 mb-6">Our system uses this as a hard constraint filter.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                    <label class="option-card border-2 border-orange-500 bg-orange-50/40 p-5 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="dietary_restriction" value="None" checked class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">No Restrictions</div>
+                            <div class="text-xs text-gray-500">Open to all foods</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-5 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="dietary_restriction" value="Halal" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Halal Certified</div>
+                            <div class="text-xs text-gray-500">Strictly Halal spots</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-5 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="dietary_restriction" value="Vegetarian" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Vegetarian</div>
+                            <div class="text-xs text-gray-500">Plant-based choices</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- QUESTION 3: BUDGET TIER -->
+            <div class="quiz-step hidden" id="step-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 3 of 4</span>
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">What is your expected budget tier?</h2>
+                <p class="text-sm text-gray-500 mb-6">Select your target price point per meal.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <label class="option-card border-2 border-orange-500 bg-orange-50/40 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="budget_tier" value="Any" checked class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Any Budget</div>
+                            <div class="text-xs text-gray-500">No price restrictions</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="budget_tier" value="$" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Value ($)</div>
+                            <div class="text-xs text-gray-500">Under KES 800</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="budget_tier" value="$$" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Moderate ($$)</div>
+                            <div class="text-xs text-gray-500">KES 800 - 2,000</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="budget_tier" value="$$$" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Premium ($$$)</div>
+                            <div class="text-xs text-gray-500">KES 2,000 - 3,500</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- QUESTION 4: DISTANCE RADIUS -->
+            <div class="quiz-step hidden" id="step-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 4 of 4</span>
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">How far are you willing to travel?</h2>
+                <p class="text-sm text-gray-500 mb-6">Calculated dynamically using matrix routing from your current region.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                    <label class="option-card border-2 border-orange-500 bg-orange-50/40 p-5 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="distance_radius" value="5.0" checked class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Nearby</div>
+                            <div class="text-xs text-gray-500">Within 5 km</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-5 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="distance_radius" value="10.0" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Moderate Drive</div>
+                            <div class="text-xs text-gray-500">Within 10 km</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-5 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="distance_radius" value="25.0" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Any Distance</div>
+                            <div class="text-xs text-gray-500">Within 25 km</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Quiz Navigation Controls -->
+            <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                <button type="button" id="prev-btn" class="hidden text-sm font-bold text-gray-400 hover:text-gray-700 transition-colors">
+                    ← Back
+                </button>
+                <div class="ml-auto">
+                    <button type="button" id="next-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-200 flex items-center space-x-2">
+                        <span>Next</span>
+                        <span>→</span>
+                    </button>
+                    <button type="submit" id="submit-btn" class="hidden bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-200 flex items-center space-x-2">
+                        <span>Fire Rules & Get Matches</span>
+                        <span>🎯</span>
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Client-side Interactive Logic -->
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Handle Card Selection Styling
+        document.querySelectorAll('.quiz-step').forEach(step => {
+            const cards = step.querySelectorAll('.option-card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    cards.forEach(c => {
+                        c.classList.remove('border-orange-500', 'bg-orange-50/40');
+                        c.classList.add('border-gray-100');
+                    });
+                    card.classList.add('border-orange-500', 'bg-orange-50/40');
+                    card.classList.remove('border-gray-100');
+                    card.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+        });
+
+        // Step Navigation
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                document.getElementById(`step-${currentStep}`).classList.add('hidden');
+                currentStep++;
+                document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+                updateUI();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                document.getElementById(`step-${currentStep}`).classList.add('hidden');
+                currentStep--;
+                document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+                updateUI();
+            }
+        });
+
+        function updateUI() {
+            // Update progress bar
+            progressBar.style.width = `${(currentStep / totalSteps) * 100}%`;
+
+            // Back button visibility
+            if (currentStep > 1) {
+                prevBtn.classList.remove('hidden');
+            } else {
+                prevBtn.classList.add('hidden');
+            }
+
+            // Toggle Next vs Submit
+            if (currentStep === totalSteps) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
