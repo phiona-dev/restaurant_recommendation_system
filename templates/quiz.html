@@ -23,14 +23,14 @@
         
         <!-- Progress Bar -->
         <div class="w-full bg-orange-100 h-2 rounded-full mb-8 overflow-hidden">
-            <div id="progress-bar" class="bg-orange-500 h-full w-1/4 transition-all duration-300"></div>
+            <div id="progress-bar" class="bg-orange-500 h-full w-1/5 transition-all duration-300"></div>
         </div>
 
         <form id="quiz-form" action="/discover" method="POST">
             
             <!-- QUESTION 1: CUISINE -->
             <div class="quiz-step" id="step-1">
-                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 1 of 4</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 1 of 5</span>
                 <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">What cuisine are you in the mood for tonight?</h2>
                 <p class="text-sm text-gray-500 mb-6">Pick one — or choose "No preference" to keep every option open.</p>
 
@@ -87,7 +87,7 @@
 
             <!-- QUESTION 2: DIETARY RESTRICTION -->
             <div class="quiz-step hidden" id="step-2">
-                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 2 of 4</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 2 of 5</span>
                 <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">Do you have any dietary restrictions?</h2>
                 <p class="text-sm text-gray-500 mb-6">Our system uses this as a hard constraint filter.</p>
 
@@ -120,7 +120,7 @@
 
             <!-- QUESTION 3: BUDGET TIER -->
             <div class="quiz-step hidden" id="step-3">
-                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 3 of 4</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 3 of 5</span>
                 <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">What is your expected budget tier?</h2>
                 <p class="text-sm text-gray-500 mb-6">Select your target price point per meal.</p>
 
@@ -161,9 +161,9 @@
 
             <!-- QUESTION 4: DISTANCE RADIUS -->
             <div class="quiz-step hidden" id="step-4">
-                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 4 of 4</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 4 of 5</span>
                 <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">How far are you willing to travel?</h2>
-                <p class="text-sm text-gray-500 mb-6">Calculated dynamically using matrix routing from your current region.</p>
+                <p class="text-sm text-gray-500 mb-6">Calculated dynamically using spherical GPS matrix routing from your region.</p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     <label class="option-card border-2 border-orange-500 bg-orange-50/40 p-5 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
@@ -192,6 +192,47 @@
                 </div>
             </div>
 
+            <!-- QUESTION 5: DINING PRIORITY / VIBE -->
+            <div class="quiz-step hidden" id="step-5">
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500 block mb-1">Question 5 of 5</span>
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-1">What matters most for your dining experience today?</h2>
+                <p class="text-sm text-gray-500 mb-6">Our inference engine will apply extra heuristic weight to your main preference.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <label class="option-card border-2 border-orange-500 bg-orange-50/40 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="priority" value="Balanced" checked class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Balanced Experience</div>
+                            <div class="text-xs text-gray-500">Equal focus on food, service, and vibe</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="priority" value="Food Quality" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Foodie Focus 🍲</div>
+                            <div class="text-xs text-gray-500">Prioritize top-tier culinary quality rating</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="priority" value="Ambiance" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Vibe & Aesthetics ✨</div>
+                            <div class="text-xs text-gray-500">Prioritize interior ambiance & atmosphere</div>
+                        </div>
+                    </label>
+
+                    <label class="option-card border-2 border-gray-100 hover:border-orange-200 p-4 rounded-2xl cursor-pointer flex items-center space-x-3 transition-all">
+                        <input type="radio" name="priority" value="Customer Service" class="accent-orange-500 w-5 h-5">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">Top Hospitality 🛎️</div>
+                            <div class="text-xs text-gray-500">Prioritize high customer service scores</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
             <!-- Quiz Navigation Controls -->
             <div class="flex justify-between items-center pt-4 border-t border-gray-100">
                 <button type="button" id="prev-btn" class="hidden text-sm font-bold text-gray-400 hover:text-gray-700 transition-colors">
@@ -215,7 +256,7 @@
     <!-- Client-side Interactive Logic -->
     <script>
         let currentStep = 1;
-        const totalSteps = 4;
+        const totalSteps = 5;
 
         const progressBar = document.getElementById('progress-bar');
         const prevBtn = document.getElementById('prev-btn');

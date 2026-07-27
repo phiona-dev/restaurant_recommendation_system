@@ -126,27 +126,47 @@ HARD_RULES = [
 HEURISTIC_RULES = [
     {
         "id": "RULE_CUISINE_MATCH",
-        "weight": 35,
+        "weight": 30,
         "condition": lambda prefs, rest: prefs.get("cuisine") != "Any" and rest.get("cuisine") == prefs.get("cuisine"),
-        "explanation": lambda prefs, rest: f"Matches requested '{rest.get('cuisine')}' cuisine (+35 pts)"
+        "explanation": lambda prefs, rest: f"Matches requested '{rest.get('cuisine')}' cuisine (+30 pts)"
+    },
+    # Dynamic Priority Matching Rules (Question 5)
+    {
+        "id": "RULE_PRIORITY_FOOD",
+        "weight": 30,
+        "condition": lambda prefs, rest: prefs.get("priority") == "Food Quality" and float(rest.get("quality_of_food", 0)) >= 4.5,
+        "explanation": lambda prefs, rest: f"User Priority Match: Exceptional food quality rating ({rest.get('quality_of_food')}/5.0) (+30 pts)"
     },
     {
+        "id": "RULE_PRIORITY_AMBIANCE",
+        "weight": 30,
+        "condition": lambda prefs, rest: prefs.get("priority") == "Ambiance" and float(rest.get("aesthetics", 0)) >= 4.4,
+        "explanation": lambda prefs, rest: f"User Priority Match: Premium interior aesthetics & dining ambiance (+30 pts)"
+    },
+    {
+        "id": "RULE_PRIORITY_SERVICE",
+        "weight": 30,
+        "condition": lambda prefs, rest: prefs.get("priority") == "Customer Service" and float(rest.get("customer_service", 0)) >= 4.3,
+        "explanation": lambda prefs, rest: f"User Priority Match: Top customer service & hospitality score ({rest.get('customer_service')}/5.0) (+30 pts)"
+    },
+    # General Quality Heuristic Rules
+    {
         "id": "RULE_HIGH_FOOD_QUALITY",
-        "weight": 25,
+        "weight": 15,
         "condition": lambda prefs, rest: float(rest.get("quality_of_food", 0)) >= 4.5,
-        "explanation": lambda prefs, rest: f"Top-tier food quality rating of {rest.get('quality_of_food')}/5.0 (+25 pts)"
+        "explanation": lambda prefs, rest: f"Top-tier food quality rating of {rest.get('quality_of_food')}/5.0 (+15 pts)"
     },
     {
         "id": "RULE_GREAT_SERVICE",
-        "weight": 15,
+        "weight": 10,
         "condition": lambda prefs, rest: float(rest.get("customer_service", 0)) >= 4.3,
-        "explanation": lambda prefs, rest: f"High customer service score of {rest.get('customer_service')}/5.0 (+15 pts)"
+        "explanation": lambda prefs, rest: f"High customer service score of {rest.get('customer_service')}/5.0 (+10 pts)"
     },
     {
         "id": "RULE_EXCELLENT_AESTHETICS",
-        "weight": 15,
+        "weight": 10,
         "condition": lambda prefs, rest: float(rest.get("aesthetics", 0)) >= 4.4,
-        "explanation": lambda prefs, rest: f"Premium interior aesthetics & dining ambiance (+15 pts)"
+        "explanation": lambda prefs, rest: f"Premium interior aesthetics & dining ambiance (+10 pts)"
     }
 ]
 
@@ -230,17 +250,20 @@ def discover_page():
         dietary_restriction = request.form.get("dietary_restriction", "None")
         budget_tier = request.form.get("budget_tier", "Any")
         distance_radius = request.form.get("distance_radius", "10.0")
+        priority = request.form.get("priority", "Balanced")
     else:
         preferred_cuisine = request.args.get("preferred_cuisine", "Any")
         dietary_restriction = request.args.get("dietary_restriction", "None")
         budget_tier = request.args.get("budget_tier", "Any")
         distance_radius = request.args.get("distance_radius", "10.0")
+        priority = request.args.get("priority", "Balanced")
 
     user_preferences = {
         "cuisine": preferred_cuisine,
         "dietary": dietary_restriction,
         "budget": budget_tier,
         "max_distance": float(distance_radius),
+        "priority": priority,
         "lat": -1.2833,
         "lon": 36.8219
     }
@@ -255,13 +278,12 @@ def discover_page():
 
 @app.route("/detail/<int:restaurant_id>")
 def detail_page(restaurant_id):
-    # Retrieve matching restaurant from Knowledge Base by ID
     restaurant = next((r for r in RESTAURANTS_KB if r["id"] == restaurant_id), None)
     
-    # If invalid ID, safely redirect back to recommendations page
     if not restaurant:
         return redirect(url_for("discover_page"))
         
     return render_template("detail.html", restaurant=restaurant)
+
 if __name__ == "__main__":
     app.run(debug=True)
