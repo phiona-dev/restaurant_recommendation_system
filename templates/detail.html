@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ restaurant.name }} - Discover Nairobi</title>
     <script src="https://cdn.tailwindcss.com"></script>
+<<<<<<< HEAD
 </head>
 <body>
     <nav>
@@ -25,10 +26,35 @@
                 >
                 
                 <div>
+=======
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50/50 font-sans text-gray-900 min-h-screen">
+    <nav class="bg-white border-b border-gray-100 py-5 px-6 sm:px-12 flex justify-between items-center sticky top-0 z-50">
+        <a href="/" class="text-xl font-black tracking-tight text-gray-900">Restaurant
+            <span class="text-orange-500">Finder</span>
+        </a>
+        <a href="/discover" class="text-sm font-bold text-orange-500 hover:text-orange-600 transition-colors bg-orange-50 px-4 py-2 rounded-xl">
+            <i data-lucide="arrow-left" class="w-4 h-4 inline-block align-middle mr-1"></i>Back to Discover
+        </a>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 p-6 sm:p-8 mb-12">
+            <div class="relative aspect-[4/3] md:aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-inner">
+                <img
+                    src="{{ restaurant.image_url }}"
+                    alt="{{ restaurant.name }}"
+                    class="w-full h-full object-cover"
+                >
+                
+                <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md shadow-md px-4 py-2 rounded-2xl text-xs font-black text-emerald-600 border border-white">
+>>>>>>> 4b2f6b5f141f66557afdbf04c336e2119d51d967
                     {{ restaurant.match_score if restaurant.match_score else '94' }}% Match Score
                 </div>
             </div>
 
+<<<<<<< HEAD
             <div>
                 <div>
                     <div>
@@ -94,3 +120,102 @@
         </div>
     </main>
 </body>
+=======
+            <div class="flex flex-col justify-between py-2">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2.5 mb-4">
+                        <span class="bg-orange-50 text-orange-600 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-lg">
+                        {{ restaurant.cuisine }}
+                        </span>
+                        <span class="bg-gray-100 text-gray-700 text-xs font-bold px-3 py-1 rounded-lg">
+                            <i data-lucide="map-pin" class="w-4 h-4 inline-block align-middle text-orange-500 mr-1"></i>{{ restaurant.location }}
+                        </span>
+                        <span class="bg-amber-50 text-amber-800 text-xs font-bold px-3 py-1 rounded-lg">
+                            <i data-lucide="star" class="w-4 h-4 inline-block align-middle text-amber-500 fill-amber-500 mr-1"></i>{{ restaurant.rating }}
+                        </span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-4">
+                    {{ restaurant.name }}
+                    </h1>
+
+                    <p class="text-gray-600 text-base leading-relaxed mb-6"> 
+                        {{ restaurant.description }}
+                    </p>
+
+                    <div class="grid grid-cols-3 gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100 text-center mb-6">
+                        <div>
+                            <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Food Quality</span>
+                            <span class="text-base font-extrabold text-gray-900">{{ restaurant.quality_of_food if restaurant.quality_of_food else '5' }} / 5</spa>
+                        </div>
+                        <div class="border-x border-gray-200">
+                            <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Aesthetics</span>
+                            <span class="text-base font-extrabold text-gray-900">{{ restaurant.aesthetics if restaurant.aesthetics else '4' }} / 5</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Service</span>
+                            <span class="text-base font-extrabold text-gray-900">{{ restaurant.customer_service if restaurant.customer_service else '4' }} / 5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-100 pt-4 space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="font-medium text-gray-400">Budget Bracket</span>
+                        <span class="font-bold text-gray-900">{{ restaurant.budget_tier }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-medium text-gray-400">Dietary Suitability</span>
+                        <div class="flex gap-1">
+                            {% for diet in restaurant.dietary_options %}
+                                <span class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2 py-0.5 rounded">{{ diet }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-medium text-gray-400">Operating Hours</span>
+                        <span class="font-semibold text-gray-700">{{ restaurant.hours if restaurant.hours else '9:00 AM - 10:00 PM' }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-medium text-gray-400">Contact Number</span>
+                        <span class="font-semibold text-gray-700">{{ restaurant.phone if restaurant.phone else '+254 700 123 456' }}</span>
+                    </div>
+                </div>  
+            </div> 
+        </div>
+
+        <div>
+            <div class="mb-6">
+                <h2 class="text-2xl font-black tracking-tight text-gray-900">Signature Delicacies</h2>
+                <p class="text-gray-500 text-sm mt-0.5">Highly recommended options curated by our selection algorithm</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {% for item in menu %}
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden group hover:shadow-md transition-shadow duration-300">
+                    <div class="aspect-[4/3] bg-gray-50 overflow-hidden">
+                        <img
+                            src="{{ item.img }}"
+                            alt="{{ item.name }}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        >
+                    </div>
+                    <div class="p-4 border-t border-gray-50 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-900 tracking-tight group-hover:text-orange-500 transition-colors">
+                            {{ item.name }}
+                        </h3>
+                        <span class="text-xs font-black bg-gray-100 px-2.5 py-1 rounded-lg text-gray-600">
+                            Popular
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>
+>>>>>>> 4b2f6b5f141f66557afdbf04c336e2119d51d967
