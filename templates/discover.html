@@ -25,7 +25,7 @@
             <aside class="lg:col-span-1 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit sticky top-24">
                 <h2 class="text-lg font-bold text-gray-900 mb-6">Refine Search</h2>
                 
-                <form action="/discover" method="POST" class="space-y-6">
+                <form action="/discover" method="GET" class="space-y-6">
                     
                     <!-- Text Search Input -->
                     <div>
@@ -34,6 +34,7 @@
                             type="text" 
                             id="search_query" 
                             name="search_query" 
+                            value="{{ current_filters.search_query }}"
                             placeholder="e.g. Pizza, Sultan..." 
                             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white text-sm transition-all"
                         >
@@ -72,7 +73,7 @@
                             <option value="$" {% if current_filters.budget == '$' %}selected{% endif %}>(Value - Under KES 800)</option>
                             <option value="$$" {% if current_filters.budget == '$$' %}selected{% endif %}>(Moderate - KES 800 - 2000)</option>
                             <option value="$$$" {% if current_filters.budget == '$$$' %}selected{% endif %}>(Premium - KES 2000 - 3500)</option>
-                            <option value="$$$" {% if current_filters.budget == '$$$' %}selected{% endif %}>(Fine Dining - Over KES 3500)</option>
+                            <option value="$$$$" {% if current_filters.budget == '$$$' %}selected{% endif %}>(Fine Dining - Over KES 3500)</option>
                         </select>
                     </div>
 
@@ -161,7 +162,7 @@
                         </a>
                     </div>
                 {% endif %}
-            </aside>
+                </main>
             
         </div>
     </div>
