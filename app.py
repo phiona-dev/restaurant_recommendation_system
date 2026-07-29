@@ -2,7 +2,7 @@ import os
 import json
 import math
 import requests
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, jsonify
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -151,7 +151,6 @@ def run_inference_engine(user_prefs, knowledge_base):
     return final_ranked_recommendations
 
 
-
 # FLASK ROUTES
 
 # Page 1: Landing Page
@@ -163,32 +162,48 @@ def landing_page():
 # Page 2: Discovery Page
 @app.route("/discover", methods=["GET", "POST"])
 def discover_page():
-    # Pulls directly from your real local restaurants.json file!
+    # Pulls directly local restaurants.json file!
     restaurants_db = load_knowledge_base()
     
+    # 1. Read from request.args (GET from quiz redirect) OR request.form (POST from sidebar)
+    if request.method == "POST":
+        dietary = request.form.get("dietary_restriction", "None")
+        budget = request.form.get("budget_tier", "Any")
+        cuisine = request.form.get("preferred_cuisine", "Any")
+        max_distance = request.form.get("distance_radius", "10.0")
+        search_query = request.form.get("search_query", "").lower()
+    else:  # GET request from Quiz Redirect or Direct Link
+        dietary = request.args.get("dietary_restriction", "None")
+        budget = request.args.get("budget_tier", "Any")
+        cuisine = request.args.get("preferred_cuisine", "Any")
+        max_distance = request.args.get("distance_radius", "10.0")
+        search_query = request.args.get("search_query", "").lower()
+
     user_preferences = {
-        "lat": -1.2833, "lon": 36.8219,
-        "dietary": "None", "budget": "Any", "cuisine": "Any", "max_distance": "10.0"
+        "lat": -1.2833, 
+        "lon": 36.8219,
+        "dietary": dietary, 
+        "budget": budget, 
+        "cuisine": cuisine, 
+        "max_distance": max_distance,
+        "search_query": search_query
     }
     
-    if request.method == "POST":
-        user_preferences["dietary"] = request.form.get("dietary_restriction", "None")
-        user_preferences["budget"] = request.form.get("budget_tier", "Any")
-        user_preferences["cuisine"] = request.form.get("preferred_cuisine", "Any")
-        user_preferences["max_distance"] = request.form.get("distance_radius", "10.0")
-        
-        search_query = request.form.get("search_query", "").lower()
-        if search_query:
-            restaurants_db = [
-                r for r in restaurants_db 
-                if search_query in r["name"].lower() or 
-                   search_query in r.get("description", "").lower() or 
-                   search_query in r.get("cuisine", "").lower() or
-                   search_query in r.get("location", "").lower()
-            ]
+    # 2. Filter search query if present
+    if search_query:
+        restaurants_db = [
+            r for r in restaurants_db 
+            if search_query in r["name"].lower() or 
+               search_query in r.get("description", "").lower() or 
+               search_query in r.get("cuisine", "").lower() or
+               search_query in r.get("location", "").lower()
+        ]
   
+    # 3. Run forward chaining engine
     results = run_inference_engine(user_preferences, restaurants_db)
+    
     return render_template("discover.html", restaurants=results, current_filters=user_preferences)
+  
 
 
 # Page 3: Dedicated Detailed View Page
@@ -235,6 +250,32 @@ def detail_page(res_name):
         menu=sample_menu, 
         maps_url=maps_url
     )
+
+
+@app.route("/api/quiz-recommend", methods=["POST"])
+def quiz_recommend():
+    """Receive quiz facts and process them via the inference engine and returns matched results"""
+    data = request.get_json() or {}
+    
+    #map popup quiz keys to what the inference-engine expects
+    user_prefs = {
+        "lat": data.get("lat", -1.2833),
+        "lon": data.get("lon", 36.8219),
+        "dietary": data.get("dietary", "None"),
+        "budget": data.get("budget", "Any"),
+        "cuisine": data.get("cuisine", "Any"),
+        "max-distance": data.get("max_distance", "10.0")
+    }
+    
+    knowledge_base = load_knowledge_base()
+    results = run_inference_engine(user_prefs, knowledge_base)
+    
+    return jsonify({
+        "status": "success",
+        "total_matches": len(results),
+        "results": results,
+        "preferences": user_prefs
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -5,28 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ restaurant.name }} - Discover Nairobi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-<<<<<<< HEAD
-</head>
-<body>
-    <nav>
-        <a>Restaurant
-            <span>Finder</span>
-        </a>
-        <a>
-            Back to Discover
-        </a>
-    </nav>
-
-    <main>
-        <div>
-            <div>
-                <img
-                    src="{{ restaurant.image_url }}"
-                    alt="{{ restaurant.name }}"
-                >
-                
-                <div>
-=======
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-gray-50/50 font-sans text-gray-900 min-h-screen">
@@ -49,78 +27,10 @@
                 >
                 
                 <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md shadow-md px-4 py-2 rounded-2xl text-xs font-black text-emerald-600 border border-white">
->>>>>>> 4b2f6b5f141f66557afdbf04c336e2119d51d967
                     {{ restaurant.match_score if restaurant.match_score else '94' }}% Match Score
                 </div>
             </div>
 
-<<<<<<< HEAD
-            <div>
-                <div>
-                    <div>
-                        <span>
-                        {{ restaurant.cuisine }}
-                        </span>
-                        <span>
-                            {{ restaurant.location }}
-                        </span>
-                        <span>
-                            {{ restaurant.rating }}
-                        </span>
-                    </div>
-
-                    <h1>
-                    {{ restaurant.name }}
-                    </h1>
-
-                    <p>
-                        {{ restaurant.description }}
-                    </p>
-                </div>
-                
-
-                <div>
-                    <div>
-                        <span>Food Quality</span>
-                        <spa>{{ restaurant.quality_of_food if restaurant.quality_of_food else '5' }} / 5</spa>
-                    </div>
-                    <div>
-                        <span>Aesthetics</span>
-                        <span>{{ restaurant.aesthetics if restaurant.aesthetics else '4' }} / 5</span>
-                    </div>
-                    <div>
-                        <span>Service</span>
-                        <span>{{ restaurant.customer_service if restaurant.customer_service else '4' }} / 5</span>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <div>
-                    <span>Budget Bracket</span>
-                    <span>{{ restaurant.budget_tier }}</span>
-                </div>
-                <div>
-                    <span>Dietary Suitability</span>
-                    <div>
-                        {% for diet in restaurant.dietary_options %}
-                            <span>{{ diet }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div>
-                    <span>Operating Hours</span>
-                    <span>{{ restaurant.hours if restaurant.hours else '9:00 AM - 10:00 PM' }}</span>
-                </div>
-                <div>
-                    <span>Contact Number</span>
-                    <span>{{ restaurant.phone if restaurant.phone else '+254 700 123 456' }}</span>
-                </div>
-            </div>
-        </div>
-    </main>
-</body>
-=======
             <div class="flex flex-col justify-between py-2">
                 <div>
                     <div class="flex flex-wrap items-center gap-2.5 mb-4">
@@ -146,7 +56,7 @@
                     <div class="grid grid-cols-3 gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100 text-center mb-6">
                         <div>
                             <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Food Quality</span>
-                            <span class="text-base font-extrabold text-gray-900">{{ restaurant.quality_of_food if restaurant.quality_of_food else '5' }} / 5</spa>
+                            <span class="text-base font-extrabold text-gray-900">{{ restaurant.quality_of_food if restaurant.quality_of_food else '5' }} / 5</span>
                         </div>
                         <div class="border-x border-gray-200">
                             <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Aesthetics</span>
@@ -218,4 +128,4 @@
 </script>
 </body>
 </html>
->>>>>>> 4b2f6b5f141f66557afdbf04c336e2119d51d967
+
