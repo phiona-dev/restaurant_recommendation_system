@@ -207,7 +207,7 @@ Navigate to `http://127.0.0.1:5000` in your web browser.
 ## 🤝 GitHub Collaboration & Evidence
 
 The repository maintains strict contribution hygiene:
-* **Branches:** Feature branches used for isolation (`feature/inference-engine`, `feature/ui-flask`, `fix/routing`).
+* **Branches:** Feature branches used for isolation (`feature/inference-engine`, `feature/frontend`, `feature/testing`, `feature/game1`, `feature/game2`, `feature/game3`).
 * **Pull Requests & Merges:** All code updates integrated via peer-reviewed Pull Requests.
 * **Commit History:** Atomic commits detailing architectural progression.
 
