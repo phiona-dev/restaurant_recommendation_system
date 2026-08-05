@@ -252,7 +252,7 @@ def detail_page(res_name):
 def quiz_recommend():
     data = request.get_json() or {}
     
-    # Corrected "max-distance" typo to "max_distance"
+    
     user_prefs = {
         "lat": data.get("lat", -1.2833),
         "lon": data.get("lon", 36.8219),
