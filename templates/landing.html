@@ -8,6 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- DotLottie Web Component Script -->
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+    
+    <!-- Preload animation files -->
+    <link rel="preload" href="https://lottie.host/7c963c4e-ed4f-4993-b630-fd9908a2e405/2vx5gHpqpN.lottie" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="https://lottie.host/4db68bbd-31f6-4cd8-84eb-189de081159a/IGmMCqhzpt.lottie" as="fetch" crossorigin="anonymous">
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex items-center">
     
@@ -22,9 +26,19 @@
             <p class="text-lg text-gray-600 max-w-md pt-2">
                 An expert recommendation system that sifts through budgets, dietary preferences, and real-world distances to find exactly what you crave.
             </p>
-            <div class="pt-4">
-                <button onclick="handleGetStarted()" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+            
+            <!-- ACTION BUTTONS GROUP -->
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3">
+                <button onclick="handleGetStarted()" class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
                     Get Started
+                </button>
+
+                <!-- NEW: RETAKE QUIZ BUTTON -->
+                <button onclick="retakeQuiz()" class="w-full sm:w-auto bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 font-semibold text-base px-6 py-4 rounded-full shadow-sm transition-all duration-200 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    <span>Retake Quiz</span>
                 </button>
             </div>
         </div>
@@ -48,14 +62,14 @@
 
             <!-- DYNAMIC STEP MASCOT & CONTAINER -->
             <div class="flex flex-col items-center mb-4">
-                <!-- Scaled mascot container -->
-                <div class="w-80 h-72 sm:w-80 sm:h-80 flex items-center justify-center overflow-hidden transition-all duration-300">
+                <div class="w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center relative">
                     <dotlottie-wc 
                         id="mascotPlayer"
                         src="https://lottie.host/7c963c4e-ed4f-4993-b630-fd9908a2e405/2vx5gHpqpN.lottie" 
                         class="w-full h-full object-contain"
                         autoplay 
-                        loop>
+                        loop
+                        renderMode="canvas">
                     </dotlottie-wc>
                 </div>
 
@@ -83,7 +97,7 @@
             <!-- STEP 1: BUDGET CHECK -->
             <div id="quizStep1" class="quiz-step hidden space-y-4 pt-2">
                 <div class="flex justify-between items-center">
-                    <span class="text-xs font-bold text-orange-500 uppercase tracking-widest">Step 1 of 3</span>
+                    <span class="text-xs font-bold text-orange-500 uppercase tracking-widest">Step 3 of 3</span>
                     <span class="text-xs text-gray-400 font-medium">Budget Check</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
@@ -109,7 +123,7 @@
             <!-- STEP 2: DIETARY RULES -->
             <div id="quizStep2" class="quiz-step hidden space-y-4 pt-2">
                 <div class="flex justify-between items-center">
-                    <span class="text-xs font-bold text-orange-500 uppercase tracking-widest">Step 2 of 3</span>
+                    <span class="text-xs font-bold text-orange-500 uppercase tracking-widest">Step 1 of 3</span>
                     <span class="text-xs text-gray-400 font-medium">Dietary Rules</span>
                 </div>
                 <div class="grid grid-cols-1 gap-3 text-left">
@@ -131,23 +145,23 @@
             <!-- STEP 3: CRAVINGS -->
             <div id="quizStep3" class="quiz-step hidden space-y-4 pt-2">
                 <div class="flex justify-between items-center">
-                    <span class="text-xs font-bold text-orange-500 uppercase tracking-widest">Step 3 of 3</span>
+                    <span class="text-xs font-bold text-orange-500 uppercase tracking-widest">Step 2 of 3</span>
                     <span class="text-xs text-gray-400 font-medium">Cravings</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
-                    <button onclick="submitQuiz('Italian')" class="flex items-center gap-3 p-3 border-2 border-gray-100 rounded-2xl hover:border-orange-500 hover:bg-orange-50/50 transition font-medium text-gray-700 text-sm">
+                    <button onclick="selectOption('cuisine', 'Italian')" class="flex items-center gap-3 p-3 border-2 border-gray-100 rounded-2xl hover:border-orange-500 hover:bg-orange-50/50 transition font-medium text-gray-700 text-sm">
                         <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100&auto=format&fit=crop" class="w-10 h-10 rounded-xl object-cover" alt="Pasta" />
                         <span>Comfort food & pasta</span>
                     </button>
-                    <button onclick="submitQuiz('African')" class="flex items-center gap-3 p-3 border-2 border-gray-100 rounded-2xl hover:border-orange-500 hover:bg-orange-50/50 transition font-medium text-gray-700 text-sm">
+                    <button onclick="selectOption('cuisine', 'African')" class="flex items-center gap-3 p-3 border-2 border-gray-100 rounded-2xl hover:border-orange-500 hover:bg-orange-50/50 transition font-medium text-gray-700 text-sm">
                         <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=100&auto=format&fit=crop" class="w-10 h-10 rounded-xl object-cover" alt="Grilled BBQ" />
                         <span>Local flavours & grill</span>
                     </button>
-                    <button onclick="submitQuiz('Asian')" class="flex items-center gap-3 p-3 border-2 border-gray-100 rounded-2xl hover:border-orange-500 hover:bg-orange-50/50 transition font-medium text-gray-700 text-sm">
+                    <button onclick="selectOption('cuisine', 'Asian')" class="flex items-center gap-3 p-3 border-2 border-gray-100 rounded-2xl hover:border-orange-500 hover:bg-orange-50/50 transition font-medium text-gray-700 text-sm">
                         <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=100&auto=format&fit=crop" class="w-10 h-10 rounded-xl object-cover" alt="Noodles" />
                         <span>Noodles & sushi</span>
                     </button>
-                    <button onclick="submitQuiz('Any')" class="flex items-center gap-3 p-3 border-2 border-gray-100 rounded-2xl hover:border-orange-500 hover:bg-orange-50/50 transition font-medium text-gray-700 text-sm">
+                    <button onclick="selectOption('cuisine', 'Any')" class="flex items-center gap-3 p-3 border-2 border-gray-100 rounded-2xl hover:border-orange-500 hover:bg-orange-50/50 transition font-medium text-gray-700 text-sm">
                         <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=100&auto=format&fit=crop" class="w-10 h-10 rounded-xl object-cover" alt="Variety Food" />
                         <span>Indecisive</span>
                     </button>
@@ -159,7 +173,6 @@
     <script>
         const answers = { budget: "Any", dietary: "None", cuisine: "Any" };
 
-        // Step mascot animations
         const stepMascots = {
             intro: "https://lottie.host/7c963c4e-ed4f-4993-b630-fd9908a2e405/2vx5gHpqpN.lottie",
             step1: "https://lottie.host/4db68bbd-31f6-4cd8-84eb-189de081159a/IGmMCqhzpt.lottie",
@@ -170,7 +183,10 @@
         const updateMascotAndHeaders = (stepKey, title, subtitle) => {
             const player = document.getElementById("mascotPlayer");
             if (player && stepMascots[stepKey]) {
-                player.setAttribute("src", stepMascots[stepKey]);
+                const targetSrc = stepMascots[stepKey];
+                if (player.getAttribute("src") !== targetSrc) {
+                    player.setAttribute("src", targetSrc);
+                }
             }
             if (title) document.getElementById("quizTitle").innerText = title;
             if (subtitle) document.getElementById("quizSubtitle").innerText = subtitle;
@@ -185,9 +201,22 @@
             }
         };
 
+        // NEW: Function to reset previous answers and open the modal
+        const retakeQuiz = () => {
+            localStorage.removeItem("quizCompleted");
+            localStorage.removeItem("quizAnswers");
+            openQuiz();
+        };
+
         const openQuiz = () => {
             resetQuizState();
-            document.getElementById("quizModal").classList.remove("hidden");
+            const modal = document.getElementById("quizModal");
+            modal.classList.remove("hidden");
+
+            // Recalculate canvas size on reveal
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 50);
         };
 
         const closeQuiz = () => {
@@ -196,8 +225,8 @@
 
         const startQuiz = () => {
             document.getElementById("quizIntro").classList.add("hidden");
-            document.getElementById("quizStep1").classList.remove("hidden");
-            updateMascotAndHeaders("step1", "How is your wallet feeling today?", "Pick a price range that fits your mood!");
+            document.getElementById("quizStep2").classList.remove("hidden");
+            updateMascotAndHeaders("step2", "Any dietary rules we must follow?", "We want to make sure everyone eats safely and happily!");
         };
 
         const resetQuizState = () => {
@@ -214,19 +243,20 @@
 
         const selectOption = (category, value) => {
             answers[category] = value;
-            if (category === "budget") {
-                document.getElementById("quizStep1").classList.add("hidden");
-                document.getElementById("quizStep2").classList.remove("hidden");
-                updateMascotAndHeaders("step2", "Any dietary rules we must follow?", "We want to make sure everyone eats safely and happily!");
-            } else if (category === "dietary") {
+            if (category === "dietary") {
                 document.getElementById("quizStep2").classList.add("hidden");
                 document.getElementById("quizStep3").classList.remove("hidden");
                 updateMascotAndHeaders("step3", "What flavor are you craving?", "Choose your primary culinary focus for today!");
+            } else if (category === "cuisine") {
+                document.getElementById("quizStep3").classList.add("hidden");
+                document.getElementById("quizStep1").classList.remove("hidden");
+                updateMascotAndHeaders("step1", "Last question! How is your wallet feeling?", "We'll only recommend places that fit your budget.");
+            } else if (category === "budget") {
+                submitQuiz();
             }
         };
 
-        const submitQuiz = (cuisineValue) => {
-            answers.cuisine = cuisineValue;
+        const submitQuiz = () => {
             localStorage.setItem("quizCompleted", "true");
             localStorage.setItem("quizAnswers", JSON.stringify(answers));
 
