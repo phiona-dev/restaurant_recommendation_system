@@ -1,8 +1,4 @@
 # Restaurant Recommendation Expert System
-> **Course:** Knowledge-Based Systems (APT 3020B / KBS)  
-> **Institution:** USIU-Africa  
-> **Repository:** [github.com/phiona-dev/restaurant-recommendation-kbs](https://github.com/phiona-dev/restaurant-recommendation-kbs)
-
 ---
 
 ## Executive Overview & Problem Statement
