@@ -182,12 +182,27 @@ Navigate to `http://127.0.0.1:5000` in your web browser.
 
 ## User Guide & Screenshots
 
-1. **Landing Page (`/`):** Explains the system and provides direct navigation to discovery.
+1. **Landing Page (`/`):** Explains the system and provides a pop quiz to get the customers preference and then direct navigation to discovery.
+   <img width="1258" height="617" alt="Screenshot 2026-08-05 123902" src="https://github.com/user-attachments/assets/37151548-2dc7-4f4a-add0-7df37c37fe18" />
+
+   - Based on the results from the popquiz, a personalized match with recommended restaurants is made visible to the customer.
+   - The preferences can be further customised on the left side filter bar
+     <img width="1274" height="605" alt="Screenshot 2026-08-05 124026" src="https://github.com/user-attachments/assets/7f60d9d2-c459-487d-9848-355f71501988" />
+     <img width="1268" height="620" alt="Screenshot 2026-08-05 142217" src="https://github.com/user-attachments/assets/b670cfc7-01bc-447b-b1c7-81a3ffac2832" />
+     <img width="1237" height="620" alt="Screenshot 2026-08-05 142408" src="https://github.com/user-attachments/assets/4ef943e3-6870-4ce1-9d41-7dbb99b67615" />
+
+
+
 2. **Interactive Discovery (`/discover`):**
    - Filter by dietary restrictions, budget tier, preferred cuisine, and maximum distance radius.
    - Enter keyword queries to filter descriptions or locations.
    - View dynamically computed match scores (%) and distance matrix values.
+   <img width="1261" height="617" alt="Screenshot 2026-08-05 142517" src="https://github.com/user-attachments/assets/5cd35fd3-68b8-4fda-9393-d8af5530b2f2" />
+
+
 3. **Restaurant Detail (`/restaurant/<name>`):** Shows complete metadata, menu items, opening hours, and direct Google Maps navigation links.
+   <img width="1264" height="621" alt="image" src="https://github.com/user-attachments/assets/d43cd36e-57ac-4c38-ad9f-14b8e614894a" />
+
 
 *(Include screenshot images in `./docs/screenshots/` directory when submitting)*
 
