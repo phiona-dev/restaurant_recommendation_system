@@ -2,6 +2,9 @@
 # 1. MOCK RESTAURANT RECOMMENDATION SYSTEM
 
 
+import unittest
+
+
 def recommend_restaurants(user_prefs, restaurant_db):
     """
     Mock function to filter restaurants based on cuisine, max price, and min rating.
