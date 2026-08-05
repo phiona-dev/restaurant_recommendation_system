@@ -3,7 +3,7 @@
 
 ## Executive Overview & Problem Statement
 
-Finding an optimal dining venue in a dynamic urban landscape like Nairobi involves evaluating multiple conflicting factors: dietary restrictions (e.g., Halal, Vegan, Gluten-Free), budget constraints, geographic distance, and cuisine preferences. Decision fatigue often leads users to sub-optimal choices or high search overhead.
+Finding an optimal dining venue in a dynamic urban landscape like Nairobi involves evaluating multiple conflicting factors: dietary restrictions (e.g., Halal, Vegan, Gluten-Free), budget constraints, geographic distance, and cuisine preferences. Decision fatigue often leads users to make poor choices.
 
 The **Restaurant Recommendation Expert System** is a lightweight, rule-based **Knowledge-Based System (KBS)** designed to replicate human expert reasoning in restaurant selection. By decoupling factual domain knowledge from reasoning algorithms, the system applies **Forward Chaining** inference over user inputs to filter, score, and rank candidate venues deterministically.
 
