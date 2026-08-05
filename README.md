@@ -45,7 +45,7 @@ The system explicitly adheres to the classical Knowledge-Based System architectu
 
 ## Knowledge Representation & Schema
 
-Domain facts are externally represented in a structured, multi-attribute `JSON` schema (`restaurants.json`). This decoupling allows dynamic expansion of the KB without altering source code logic.
+Domain facts are externally represented in a structured, multi-attribute `JSON` schema (`restaurants.json`). This allows dynamic expansion of the KB without altering source code logic.
 
 ### 1. External Fact Base Schema
 Each entity in the Knowledge Base is represented with both categorical, numeric, and array-based attributes:
