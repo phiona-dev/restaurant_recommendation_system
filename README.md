@@ -200,8 +200,6 @@ Navigate to `http://127.0.0.1:5000` in your web browser.
    <img width="1264" height="621" alt="image" src="https://github.com/user-attachments/assets/d43cd36e-57ac-4c38-ad9f-14b8e614894a" />
 
 
-*(Include screenshot images in `./docs/screenshots/` directory when submitting)*
-
 ---
 
 ## 🤝 GitHub Collaboration & Evidence
